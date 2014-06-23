@@ -42,6 +42,7 @@ project(":core") {
 
 
     dependencies {
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
     }
 }

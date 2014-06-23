@@ -1,12 +1,23 @@
 package com.allen.george.artificiallife.main.desktop;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.allen.george.artificiallife.main.ArtificialLife;
 
-public class DesktopLauncher {
+import com.allen.george.artificiallife.main.GUI;
+import com.allen.george.artificiallife.main.UserInterface;
+
+import javax.swing.*;
+
+
+
+public class DesktopLauncher extends JFrame{
+
+
 	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new ArtificialLife(), config);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run () {
+               GUI g = new GUI();
+               g.setVisible(true);
+            }
+        });
 	}
 }
