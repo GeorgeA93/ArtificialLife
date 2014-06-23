@@ -45,6 +45,8 @@ public class GUI extends JFrame implements ActionListener {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - George Allen
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         menuBar = new JMenuBar();
         file = new JMenu();
         exit = new JMenuItem();
@@ -89,22 +91,21 @@ public class GUI extends JFrame implements ActionListener {
 
             //======== swingPanelLeft ========
             {
-
-                swingPanelLeft.setLayout(new GridLayout(0,1));
+                swingPanelLeft.setLayout(new GridLayout());
             }
             GUIContentPane.add(swingPanelLeft);
             swingPanelLeft.setBounds(0, 0, 150, 535);
 
             //======== swingPanelRight ========
             {
-                swingPanelRight.setLayout(new GridLayout(0,1));
+                swingPanelRight.setLayout(new GridLayout());
             }
             GUIContentPane.add(swingPanelRight);
             swingPanelRight.setBounds(855, 0, 150, 535);
 
             //======== openglPanel ========
             {
-                openglPanel.setLayout(new GridLayout(0,1));
+                openglPanel.setLayout(new GridLayout());
 
                 Container openglContainer = new Container();
 
@@ -125,7 +126,7 @@ public class GUI extends JFrame implements ActionListener {
                 //---- fps ----
                 fps.setText("FPS");
                 swingPanelBottom.add(fps);
-                fps.setBounds(new Rectangle(new Point(5, 5), fps.getPreferredSize()));
+                fps.setBounds(new Rectangle(5, 5, 100, 100));
 
                 { // compute preferred size
                     Dimension preferredSize = new Dimension();

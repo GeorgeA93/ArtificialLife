@@ -1,12 +1,13 @@
 package com.allen.george.artificiallife.main;
 
-import com.allen.george.artificiallife.graphics.Renderer;
+
+import com.allen.george.artificiallife.simulation.World;
+import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
@@ -15,8 +16,7 @@ public class ArtificialLife extends ApplicationAdapter {
 
     //Graphics
 	private SpriteBatch spriteBatch;
-    private BitmapFont font;
-    private Renderer renderer;
+    private World world;
     private GUI gui;
 
     //Camera
@@ -32,12 +32,11 @@ public class ArtificialLife extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+        Content.load();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(Gdx.graphics.getWidth() >> 1, Gdx.graphics.getHeight() >> 1,0);
 		spriteBatch = new SpriteBatch();
-        renderer = new Renderer(this);
-
-        font = new BitmapFont();
+        world = new World(100, 100);
 	}
 
 	@Override
@@ -53,7 +52,7 @@ public class ArtificialLife extends ApplicationAdapter {
         spriteBatch.setProjectionMatrix(camera.projection);
         spriteBatch.setTransformMatrix(camera.view);
 		spriteBatch.begin();
-        renderer.renderMap(spriteBatch, (int)scrollOffsetX, (int)scrollOffsetY);
+        world.render(spriteBatch, (int) scrollOffsetX, (int) scrollOffsetY);
 		spriteBatch.end();
 	}
 
@@ -61,6 +60,7 @@ public class ArtificialLife extends ApplicationAdapter {
         gui.setFPS(String.valueOf(Gdx.graphics.getFramesPerSecond())); //set the fps
 
         camera.update();
+        world.update();
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
             camera.position.set(new Vector3(camera.position.x,camera.position.y + moveSpeed,camera.position.z));
