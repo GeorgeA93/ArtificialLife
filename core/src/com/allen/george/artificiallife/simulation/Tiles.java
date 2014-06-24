@@ -1,5 +1,7 @@
 package com.allen.george.artificiallife.simulation;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 /**
  * Created by George on 23/06/2014.
  */
@@ -31,5 +33,20 @@ public class Tiles {
     public static final int BIG_ROCK_2 = 15;
     public static final int BIG_ROCK_3 = 16;
     public static final int BIG_ROCK_4 = 17;
+    public static final int LONG_ROCK_BASE = 18;
+    public static final int LONG_ROCK_TOP = 19;
 
+    //TREES
+    public static final int tree_top_left = 20;
+    public static final int tree_top_middle = 21;
+    public static final int tree_top_right = 22;
+    public static final int tree_top_rmiddle_left = 23;
+    public static final int tree_top_rmiddle = 24;
+    public static final int tree_top_rmiddle_right = 25;
+    public static final int tree_bottom_rmiddle_left = 26;
+    public static final int tree_bottom_rmiddle = 27;
+    public static final int tree_bottom_rmiddle_right = 28;
+    public static final int tree_bottom_left = 29;
+    public static final int tree_bottom_middle = 30;
+    public static final int tree_bottom_right = 31;
 }
