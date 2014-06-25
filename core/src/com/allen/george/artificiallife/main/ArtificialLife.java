@@ -54,9 +54,9 @@ public class ArtificialLife extends ApplicationAdapter {
         //render
         spriteBatch.setProjectionMatrix(camera.projection);
         spriteBatch.setTransformMatrix(camera.view);
-		spriteBatch.begin();
+        spriteBatch.begin();
         world.render(spriteBatch, (int) scrollOffsetX, (int) scrollOffsetY, camera);
-		spriteBatch.end();
+        spriteBatch.end();
 	}
 
     public void update(){

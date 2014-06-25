@@ -1,9 +1,15 @@
 package com.allen.george.artificiallife.simulation.world.map;
 
+import com.allen.george.artificiallife.simulation.world.World;
+import com.allen.george.artificiallife.simulation.world.map.layers.*;
+import com.allen.george.artificiallife.simulation.world.map.objects.*;
+import com.allen.george.artificiallife.simulation.world.map.objects.Object;
 import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.allen.george.artificiallife.simulation.world.map.objects.Object;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -13,21 +19,23 @@ public class Map {
 
     private Random random = new Random();
 
+    private World world;
+
     //Map propertiees
     public static final int TILE_SIZE = 32;
-    public static MapLayer backgroundLayer;
-    public static MapLayer shadowLayer;
-    public static MapLayer interactiveLayer;
-    public static MapLayer foregroundLayer;
-
-
+    private MapLayer backgroundLayer;
+    private MapLayer shadowLayer;
+    private MapLayer interactiveLayer;
+    private MapLayer foregroundLayer;
     private int[][] collisionMap;
-
     private int width, height;
 
-    public Map(int width, int height){
+    private ArrayList<Object> mapObjects = new ArrayList<Object>();
+
+    public Map(int width, int height, World world){
         this.width = width;
         this.height = height;
+        this.world = world;
         generateMap();
     }
 
@@ -65,6 +73,16 @@ public class Map {
         }
     }
 
+    public void addObject(Object o){
+        mapObjects.add(o);
+    }
+
+    public void update(){
+        for(Object o : mapObjects){
+            o.update();
+        }
+    }
+
 
     public int getCollisionAt(float x, float y){
         return collisionMap[(int)x / 32][(int)y / 32];
@@ -91,6 +109,39 @@ public class Map {
         }
     }
 
+    public MapLayer getBackgroundLayer() {
+        return backgroundLayer;
+    }
 
+    public void setBackgroundLayer(MapLayer backgroundLayer) {
+        this.backgroundLayer = backgroundLayer;
+    }
 
+    public MapLayer getShadowLayer() {
+        return shadowLayer;
+    }
+
+    public void setShadowLayer(MapLayer shadowLayer) {
+        this.shadowLayer = shadowLayer;
+    }
+
+    public MapLayer getInteractiveLayer() {
+        return interactiveLayer;
+    }
+
+    public void setInteractiveLayer(MapLayer interactiveLayer) {
+        this.interactiveLayer = interactiveLayer;
+    }
+
+    public MapLayer getForegroundLayer() {
+        return foregroundLayer;
+    }
+
+    public void setForegroundLayer(MapLayer foregroundLayer) {
+        this.foregroundLayer = foregroundLayer;
+    }
+
+    public World getWorld() {
+        return world;
+    }
 }
