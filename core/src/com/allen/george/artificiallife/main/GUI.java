@@ -39,6 +39,14 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
             Gdx.app.exit();
         } else if (e.getActionCommand().equals("About")) {
 
+        } else if (e.getActionCommand().equals("New")){
+
+        } else if(e.getActionCommand().equals("Running")){
+            if(!artificialLife.isRunning()){
+                artificialLife.setRunning(true);
+            } else{
+                artificialLife.setRunning(false);
+            }
         }
     }
 
@@ -57,14 +65,27 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
         openglPanel.setBorder(title);
     }
 
+    public void setCurrentCycle(int c){
+        cyclesLabel.setText("Current Cycle: " + c);
+    }
+
+    public void setTime(String t){
+        labelTime.setText("Time: " + t);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - George Allen
         menuBar = new JMenuBar();
         file = new JMenu();
-        exit = new JMenuItem();
+        newMenuItem = new JMenuItem();
+        newMenuItem.addActionListener(this);
+        exitMenuItem = new JMenuItem();
+        exitMenuItem.addActionListener(this);
         help = new JMenu();
+        help.addActionListener(this);
         about = new JMenuItem();
+        about.addActionListener(this);
         swingPanelLeft = new JPanel();
         cycleSpeedSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 200, 1));
         cycleSpeedSpinner.addChangeListener(this);
@@ -73,10 +94,17 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
         openglPanel = new JPanel();
         swingPanelBottom = new JPanel();
         artificialLife = new ArtificialLife(this);
+        runningRadioBtn = new JRadioButton();
+        runningRadioBtn.setActionCommand("Running");
+        runningRadioBtn.addActionListener(this);
+        labelTime = new JLabel();
+        cyclesLabel = new JLabel();
+        panel1 = new JPanel();
 
         //======== GUI ========
         {
             setTitle("Artificial Life");
+            setBackground(UIManager.getColor("Panel.background"));
             Container GUIContentPane = getContentPane();
             GUIContentPane.setLayout(null);
 
@@ -87,9 +115,13 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
                 {
                     file.setText("File");
 
-                    //---- exit ----
-                    exit.setText("Exit");
-                    file.add(exit);
+                    //---- newMenuItem ----
+                    newMenuItem.setText("New");
+                    file.add(newMenuItem);
+
+                    //---- exitMenuItem ----
+                    exitMenuItem.setText("Exit");
+                    file.add(exitMenuItem);
                 }
                 menuBar.add(file);
 
@@ -111,12 +143,17 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
 
                 swingPanelLeft.setLayout(null);
                 swingPanelLeft.add(cycleSpeedSpinner);
-                cycleSpeedSpinner.setBounds(new Rectangle(new Point(100, 80), cycleSpeedSpinner.getPreferredSize()));
+                cycleSpeedSpinner.setBounds(new Rectangle(new Point(90, 65), cycleSpeedSpinner.getPreferredSize()));
 
                 //---- spinnerLabel ----
                 spinnerLabel.setText("Cycle Speed");
                 swingPanelLeft.add(spinnerLabel);
-                spinnerLabel.setBounds(new Rectangle(new Point(25, 80), spinnerLabel.getPreferredSize()));
+                spinnerLabel.setBounds(new Rectangle(new Point(20, 70), spinnerLabel.getPreferredSize()));
+
+                //---- runningRadioBtn ----
+                runningRadioBtn.setText("Running");
+                swingPanelLeft.add(runningRadioBtn);
+                runningRadioBtn.setBounds(new Rectangle(new Point(10, 30), runningRadioBtn.getPreferredSize()));
 
                 { // compute preferred size
                     Dimension preferredSize = new Dimension();
@@ -160,7 +197,18 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
 
             //======== swingPanelBottom ========
             {
+                swingPanelBottom.setBorder(new TitledBorder("Simulation Information"));
                 swingPanelBottom.setLayout(null);
+
+                //---- labelTime ----
+                labelTime.setText("Time:");
+                swingPanelBottom.add(labelTime);
+                labelTime.setBounds(15, 25, 80, labelTime.getPreferredSize().height);
+
+                //---- cyclesLabel ----
+                cyclesLabel.setText("Current Cycle: ");
+                swingPanelBottom.add(cyclesLabel);
+                cyclesLabel.setBounds(15, 45, 185, cyclesLabel.getPreferredSize().height);
 
                 { // compute preferred size
                     Dimension preferredSize = new Dimension();
@@ -177,7 +225,29 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
                 }
             }
             GUIContentPane.add(swingPanelBottom);
-            swingPanelBottom.setBounds(150, 400, 705, 135);
+            swingPanelBottom.setBounds(150, 400, 705, 130);
+
+            //======== panel1 ========
+            {
+                panel1.setBorder(new TitledBorder("Evolutution Controls"));
+                panel1.setLayout(null);
+
+                { // compute preferred size
+                    Dimension preferredSize = new Dimension();
+                    for(int i = 0; i < panel1.getComponentCount(); i++) {
+                        Rectangle bounds = panel1.getComponent(i).getBounds();
+                        preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+                        preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
+                    }
+                    Insets insets = panel1.getInsets();
+                    preferredSize.width += insets.right;
+                    preferredSize.height += insets.bottom;
+                    panel1.setMinimumSize(preferredSize);
+                    panel1.setPreferredSize(preferredSize);
+                }
+            }
+            GUIContentPane.add(panel1);
+            panel1.setBounds(0, 0, 150, 305);
 
             { // compute preferred size
                 Dimension preferredSize = new Dimension();
@@ -202,15 +272,20 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
     // Generated using JFormDesigner Evaluation license - George Allen
     private JMenuBar menuBar;
     private JMenu file;
-    private JMenuItem exit;
+    private JMenuItem newMenuItem;
+    private JMenuItem exitMenuItem;
     private JMenu help;
     private JMenuItem about;
     private JPanel swingPanelLeft;
     private JSpinner cycleSpeedSpinner;
     private JLabel spinnerLabel;
+    private JRadioButton runningRadioBtn;
     private JPanel swingPanelRight;
     private JPanel openglPanel;
     private JPanel swingPanelBottom;
+    private JLabel labelTime;
+    private JLabel cyclesLabel;
+    private JPanel panel1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     private ArtificialLife artificialLife;

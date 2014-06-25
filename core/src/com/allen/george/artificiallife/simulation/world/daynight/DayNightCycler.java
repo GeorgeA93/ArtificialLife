@@ -36,7 +36,7 @@ public class DayNightCycler {
             cycles += 1;
         }
         time += timeSpeed;
-        timeString = convertTime("timeString");
+        timeString = convertTime(timeString);
     }
 
     public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera){

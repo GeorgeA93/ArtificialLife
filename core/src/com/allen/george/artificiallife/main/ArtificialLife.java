@@ -32,7 +32,7 @@ public class ArtificialLife extends ApplicationAdapter {
 
     public ArtificialLife(GUI gui){
         this.gui = gui;
-        running = true;
+        running = false;
     }
 	
 	@Override
@@ -53,16 +53,15 @@ public class ArtificialLife extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if(running){
-            //update
             update();
-
-            //render
-            spriteBatch.setProjectionMatrix(camera.projection);
-            spriteBatch.setTransformMatrix(camera.view);
-            spriteBatch.begin();
-            world.render(spriteBatch, (int) scrollOffsetX, (int) scrollOffsetY, camera);
-            spriteBatch.end();
         }
+
+        //render
+        spriteBatch.setProjectionMatrix(camera.projection);
+        spriteBatch.setTransformMatrix(camera.view);
+        spriteBatch.begin();
+        world.render(spriteBatch, (int) scrollOffsetX, (int) scrollOffsetY, camera);
+        spriteBatch.end();
 	}
 
     public void update(){
@@ -92,6 +91,10 @@ public class ArtificialLife extends ApplicationAdapter {
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && camera.zoom < 5){ //
            camera.zoom += zoomSpeed;
         }
+
+        //UPDATE THE GUI
+        gui.setTime(world.getDayNightCycler().getTimeString());
+        gui.setCurrentCycle(world.getDayNightCycler().getCycles());
 
     }
 
