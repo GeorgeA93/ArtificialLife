@@ -1,7 +1,7 @@
 package com.allen.george.artificiallife.main;
 
 
-import com.allen.george.artificiallife.simulation.World;
+import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -9,9 +9,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
-
+import org.lwjgl.Sys;
 
 
 public class ArtificialLife extends ApplicationAdapter {
@@ -25,7 +24,7 @@ public class ArtificialLife extends ApplicationAdapter {
     private OrthographicCamera camera;
     private float scrollOffsetX = 0;
     private float scrollOffsetY = 0;
-    private float moveSpeed = 0.5f;
+    private float moveSpeed = 1f;
     private float zoomSpeed = 0.01f;
 
     public ArtificialLife(GUI gui){
@@ -35,11 +34,12 @@ public class ArtificialLife extends ApplicationAdapter {
 	@Override
 	public void create () {
         Content.load();
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(Gdx.graphics.getWidth() >> 1, Gdx.graphics.getHeight() >> 1,0);
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        camera.position.set(Gdx.graphics.getWidth() >> 1,Gdx.graphics.getHeight() >> 1,0);
+        camera.zoom = 2;
 
 		spriteBatch = new SpriteBatch();
-        world = new World(100, 100);
+        world = new World(100,100);
 	}
 
 	@Override
@@ -52,16 +52,15 @@ public class ArtificialLife extends ApplicationAdapter {
         update();
 
         //render
-        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.setProjectionMatrix(camera.projection);
         spriteBatch.setTransformMatrix(camera.view);
 		spriteBatch.begin();
-        world.render(spriteBatch, (int) scrollOffsetX, (int) scrollOffsetY);
+        world.render(spriteBatch, (int) scrollOffsetX, (int) scrollOffsetY, camera);
 		spriteBatch.end();
 	}
 
     public void update(){
         gui.setFPS(String.valueOf(Gdx.graphics.getFramesPerSecond())); //set the fps
-
         camera.update();
         world.update();
 
@@ -81,10 +80,10 @@ public class ArtificialLife extends ApplicationAdapter {
             camera.position.set(new Vector3(camera.position.x + moveSpeed,camera.position.y,camera.position.z));
             scrollOffsetX += moveSpeed;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.UP) && camera.zoom > 0){ //
+        if(Gdx.input.isKeyPressed(Input.Keys.UP) && camera.zoom > 2){ //
            camera.zoom -= zoomSpeed;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && camera.zoom < 20){ //
+        if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && camera.zoom < 5){ //
            camera.zoom += zoomSpeed;
         }
 
