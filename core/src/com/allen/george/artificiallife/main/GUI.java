@@ -4,6 +4,7 @@
 
 package com.allen.george.artificiallife.main;
 
+import javax.swing.border.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas;
 
@@ -51,7 +52,9 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
     }
 
     public void setFPS(String fs){
-        fps.setText("FPS: " + fs);
+        TitledBorder title;
+        title = BorderFactory.createTitledBorder("FPS: " + fs);
+        openglPanel.setBorder(title);
     }
 
     private void initComponents() {
@@ -63,13 +66,12 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
         help = new JMenu();
         about = new JMenuItem();
         swingPanelLeft = new JPanel();
-        cycleSpeedSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 20, 1));
+        cycleSpeedSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 200, 1));
+        cycleSpeedSpinner.addChangeListener(this);
         spinnerLabel = new JLabel();
-        separator1 = new JToolBar.Separator();
         swingPanelRight = new JPanel();
         openglPanel = new JPanel();
         swingPanelBottom = new JPanel();
-        fps = new JLabel();
         artificialLife = new ArtificialLife(this);
 
         //======== GUI ========
@@ -105,17 +107,16 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
 
             //======== swingPanelLeft ========
             {
+                swingPanelLeft.setBorder(new TitledBorder("Simluation Controls"));
 
                 swingPanelLeft.setLayout(null);
                 swingPanelLeft.add(cycleSpeedSpinner);
-                cycleSpeedSpinner.setBounds(new Rectangle(new Point(100, 365), cycleSpeedSpinner.getPreferredSize()));
+                cycleSpeedSpinner.setBounds(new Rectangle(new Point(100, 80), cycleSpeedSpinner.getPreferredSize()));
 
                 //---- spinnerLabel ----
                 spinnerLabel.setText("Cycle Speed");
                 swingPanelLeft.add(spinnerLabel);
-                spinnerLabel.setBounds(new Rectangle(new Point(25, 365), spinnerLabel.getPreferredSize()));
-                swingPanelLeft.add(separator1);
-                separator1.setBounds(5, 325, 140, 195);
+                spinnerLabel.setBounds(new Rectangle(new Point(25, 80), spinnerLabel.getPreferredSize()));
 
                 { // compute preferred size
                     Dimension preferredSize = new Dimension();
@@ -132,7 +133,7 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
                 }
             }
             GUIContentPane.add(swingPanelLeft);
-            swingPanelLeft.setBounds(0, 0, 150, 535);
+            swingPanelLeft.setBounds(0, 310, 150, 220);
 
             //======== swingPanelRight ========
             {
@@ -143,8 +144,8 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
 
             //======== openglPanel ========
             {
+                openglPanel.setBorder(new TitledBorder("FPS:"));
                 openglPanel.setLayout(new GridLayout());
-
                 Container openglContainer = new Container();
 
                 LwjglAWTCanvas canvas = new LwjglAWTCanvas(artificialLife);
@@ -155,16 +156,11 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
                 openglPanel.add(openglContainer);
             }
             GUIContentPane.add(openglPanel);
-            openglPanel.setBounds(150, 0, 705, 400);
+            openglPanel.setBounds(150, 0, RENDER_WIDTH, RENDER_HEIGHT);
 
             //======== swingPanelBottom ========
             {
                 swingPanelBottom.setLayout(null);
-
-                //---- fps ----
-                fps.setText("FPS");
-                swingPanelBottom.add(fps);
-                fps.setBounds(new Rectangle(new Point(5, 5), fps.getPreferredSize()));
 
                 { // compute preferred size
                     Dimension preferredSize = new Dimension();
@@ -204,7 +200,6 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner Evaluation license - George Allen
-    private ArtificialLife artificialLife;
     private JMenuBar menuBar;
     private JMenu file;
     private JMenuItem exit;
@@ -213,10 +208,10 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
     private JPanel swingPanelLeft;
     private JSpinner cycleSpeedSpinner;
     private JLabel spinnerLabel;
-    private JToolBar.Separator separator1;
     private JPanel swingPanelRight;
     private JPanel openglPanel;
     private JPanel swingPanelBottom;
-    private JLabel fps;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+
+    private ArtificialLife artificialLife;
 }

@@ -17,7 +17,7 @@ public class DayNightCycler {
     private double timeSpeed;
     private String timeString = "";
     private int cycles = 0;
-    private int maxCycles = 200;
+    private int maxCycles = 20;
 
     private int width, height;
 

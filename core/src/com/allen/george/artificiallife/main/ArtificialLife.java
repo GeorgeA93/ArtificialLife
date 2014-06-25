@@ -32,7 +32,7 @@ public class ArtificialLife extends ApplicationAdapter {
 
     public ArtificialLife(GUI gui){
         this.gui = gui;
-        running = false;
+        running = true;
     }
 	
 	@Override
