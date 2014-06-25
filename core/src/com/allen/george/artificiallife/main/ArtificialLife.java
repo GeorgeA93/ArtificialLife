@@ -27,8 +27,12 @@ public class ArtificialLife extends ApplicationAdapter {
     private float moveSpeed = 1f;
     private float zoomSpeed = 0.01f;
 
+    private boolean running;
+
+
     public ArtificialLife(GUI gui){
         this.gui = gui;
+        running = false;
     }
 	
 	@Override
@@ -48,15 +52,17 @@ public class ArtificialLife extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        //update
-        update();
+        if(running){
+            //update
+            update();
 
-        //render
-        spriteBatch.setProjectionMatrix(camera.projection);
-        spriteBatch.setTransformMatrix(camera.view);
-        spriteBatch.begin();
-        world.render(spriteBatch, (int) scrollOffsetX, (int) scrollOffsetY, camera);
-        spriteBatch.end();
+            //render
+            spriteBatch.setProjectionMatrix(camera.projection);
+            spriteBatch.setTransformMatrix(camera.view);
+            spriteBatch.begin();
+            world.render(spriteBatch, (int) scrollOffsetX, (int) scrollOffsetY, camera);
+            spriteBatch.end();
+        }
 	}
 
     public void update(){
@@ -89,11 +95,24 @@ public class ArtificialLife extends ApplicationAdapter {
 
     }
 
+    public World getWorld() {
+        return world;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
 
     @Override
     public void dispose () {
 
     }
+
+
 
 
 }

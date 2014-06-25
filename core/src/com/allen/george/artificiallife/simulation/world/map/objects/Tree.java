@@ -15,8 +15,6 @@ public class Tree extends Object {
         super(width, height,position, world);
         this.dead = dead;
         this.cycleToChange = 1 + (int)(Math.random() * ((world.getDayNightCycler().getMaxCycles() - 1) + 1));
-
-        System.out.println(cycleToChange);
     }
 
     public void update(){
