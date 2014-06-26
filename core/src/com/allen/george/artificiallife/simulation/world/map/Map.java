@@ -1,5 +1,6 @@
 package com.allen.george.artificiallife.simulation.world.map;
 
+import com.allen.george.artificiallife.graphics.particles.BaseParticle;
 import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.simulation.world.map.layers.*;
 import com.allen.george.artificiallife.simulation.world.map.objects.*;
@@ -8,6 +9,7 @@ import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.allen.george.artificiallife.simulation.world.map.objects.Object;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -32,9 +34,9 @@ public class Map {
 
     private ArrayList<Object> mapObjects = new ArrayList<Object>();
 
-    public Map(int width, int height, World world){
-        this.width = width;
-        this.height = height;
+    public Map(World world){
+        this.width = world.getWidth();
+        this.height = world.getHeight();
         this.world = world;
         generateMap();
     }
@@ -78,8 +80,15 @@ public class Map {
     }
 
     public void update(){
-        for(Object o : mapObjects){
-            o.update();
+        for (int i = 0; i < mapObjects.size(); i++) {
+            Object o = mapObjects.get(i);
+            if (o == null)
+                break;
+            if (!o.removed)
+                o.update();
+            if (o.removed) {
+                mapObjects.remove(i--);
+            }
         }
     }
 
@@ -97,6 +106,12 @@ public class Map {
 
     public void renderLayer(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera, MapLayer layer){
         layer.render(spriteBatch, scrollX, scrollY, camera);
+    }
+
+    public void renderObjects(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera){
+        for(Object o : mapObjects){
+            o.render(spriteBatch, scrollX, scrollY, camera);
+        }
     }
 
     public void renderCollisionLayer(SpriteBatch spriteBatch, int scrollX, int scrollY){

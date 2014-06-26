@@ -2,7 +2,6 @@ package com.allen.george.artificiallife.simulation.world.map.layers;
 
 import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.simulation.world.map.Tile;
-import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

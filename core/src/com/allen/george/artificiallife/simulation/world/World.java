@@ -1,10 +1,16 @@
 package com.allen.george.artificiallife.simulation.world;
 
+import com.allen.george.artificiallife.graphics.particles.BaseParticle;
+import com.allen.george.artificiallife.graphics.particles.Rain;
 import com.allen.george.artificiallife.simulation.life.LifeForm;
 import com.allen.george.artificiallife.simulation.world.daynight.DayNightCycler;
 import com.allen.george.artificiallife.simulation.world.map.Map;
+import com.allen.george.artificiallife.simulation.world.weather.WeatherManager;
+import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import java.util.ArrayList;
 
 /**
  * Created by George on 23/06/2014.
@@ -16,6 +22,7 @@ public class World {
     private Map map;
 
     private DayNightCycler dayNightCycler;
+    private WeatherManager weatherManager;
 
     private LifeForm lifeForm;
 
@@ -28,30 +35,49 @@ public class World {
     }
 
     public void generateNewWorld(){
-        dayNightCycler = new DayNightCycler(width, height);
-        map = new Map(width, height, this);
+        dayNightCycler = new DayNightCycler(this);
+        weatherManager = new WeatherManager(this);
+        map = new Map(this);
         //generate population
         lifeForm = new LifeForm("0110011", this);
     }
 
     public void update(){
         dayNightCycler.update();
+        weatherManager.update();
         map.update();
         lifeForm.update();
+
+
     }
 
 
     public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera){
+        spriteBatch.begin();
         map.renderLayer(spriteBatch, scrollX, scrollY, camera, map.getBackgroundLayer());
 
         lifeForm.render(spriteBatch, scrollX, scrollY);
-
+        map.renderObjects(spriteBatch, scrollX, scrollY, camera);
         map.renderLayer(spriteBatch, scrollX, scrollY, camera, map.getShadowLayer());
         map.renderLayer(spriteBatch, scrollX, scrollY, camera, map.getInteractiveLayer());
         map.renderLayer(spriteBatch, scrollX, scrollY, camera, map.getForegroundLayer());
         // map.renderCollisionLayer(spriteBatch, scrollX, scrollY);
 
+        weatherManager.render(spriteBatch, scrollX, scrollY, camera);
+
+        spriteBatch.end();
+
         dayNightCycler.render(spriteBatch, scrollX, scrollY, camera);
+    }
+
+
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
     }
 
     public Map getMap() {
@@ -66,7 +92,7 @@ public class World {
         return dayNightCycler;
     }
 
-    public void setDayNightCycler(DayNightCycler dayNightCycler) {
-        this.dayNightCycler = dayNightCycler;
+    public WeatherManager getWeatherManager() {
+        return weatherManager;
     }
 }

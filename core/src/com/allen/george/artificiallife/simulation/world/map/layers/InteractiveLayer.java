@@ -81,7 +81,7 @@ public class InteractiveLayer extends MapLayer{
         }
     }
 
-    private void generateWater(int xx, int yy){
+    public void generateWater(int xx, int yy){
         int w = 2 + (int)(Math.random() * ((4 - 2) + 1));
         if(w == 2  &&
                 tiles[xx + yy * width] == Tile.NULL_TILE.getTileID() &&

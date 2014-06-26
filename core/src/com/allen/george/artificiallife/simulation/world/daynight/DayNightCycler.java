@@ -1,10 +1,18 @@
 package com.allen.george.artificiallife.simulation.world.daynight;
 
+import com.allen.george.artificiallife.graphics.particles.BaseParticle;
+import com.allen.george.artificiallife.graphics.particles.Rain;
 import com.allen.george.artificiallife.simulation.life.LifeForm;
+import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.utils.MathHelper;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.compression.lzma.Base;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
 
 /**
  * Created by George on 25/06/2014.
@@ -13,23 +21,29 @@ public class DayNightCycler {
 
     private ShapeRenderer shapeRenderer;
 
-    private double time;
-    private double timeSpeed;
+    private double time = 0.8;
+    private double timeSpeed = 0.0001;
     private String timeString = "";
     private int cycles = 0;
-    private int maxCycles = 20;
+    private int maxCycles = 200;
 
     private int width, height;
 
-    public DayNightCycler(int width, int height){
-        this.width = width;
-        this.height = height;
-        this.time = 0.8;
-        this.timeSpeed = 0.0001;
+
+
+    private World world;
+
+    public DayNightCycler(World world){
+        this.world = world;
+        this.width = world.getWidth();
+        this.height = world.getHeight();
         this.shapeRenderer = new ShapeRenderer();
+
+
     }
 
     public void update(){
+
         if(time >= 0.8) timeSpeed = timeSpeed * -1;
         if(time <= 0){
             timeSpeed =  timeSpeed * -1;
@@ -40,12 +54,17 @@ public class DayNightCycler {
     }
 
     public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera){
+        Gdx.gl.glEnable(GL11.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
         //shapeRenderer.setProjectionMatrix(camera.projection);
         shapeRenderer.setTransformMatrix(camera.view);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0, 0, 0, (float)time);
         shapeRenderer.rect(0, 0, width * 32, height * 32);
         shapeRenderer.end();
+
+        Gdx.gl.glDisable(GL11.GL_BLEND);
     }
 
     private String convertTime(String lastTime){

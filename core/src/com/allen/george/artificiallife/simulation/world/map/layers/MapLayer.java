@@ -30,6 +30,9 @@ public abstract class MapLayer {
     public void generateDeadTree(int xx, int yy){
 
     }
+    public void generateWater(int xx, int yy){
+
+    }
 
     public abstract void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera);
 

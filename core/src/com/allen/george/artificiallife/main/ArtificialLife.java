@@ -52,16 +52,15 @@ public class ArtificialLife extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if(running){
+        if(running && world.getDayNightCycler().getCycles() < world.getDayNightCycler().getMaxCycles()){
             update();
         }
 
         //render
         spriteBatch.setProjectionMatrix(camera.projection);
         spriteBatch.setTransformMatrix(camera.view);
-        spriteBatch.begin();
         world.render(spriteBatch, (int) scrollOffsetX, (int) scrollOffsetY, camera);
-        spriteBatch.end();
+
 	}
 
     public void update(){

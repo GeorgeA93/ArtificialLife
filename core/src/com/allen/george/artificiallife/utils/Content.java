@@ -57,6 +57,9 @@ public class Content {
     public static TextureRegion tree_dead_bottom_left;
     public static TextureRegion tree_dead_bottom_middle;
     public static TextureRegion tree_dead_bottom_right;
+    public static Texture particle;
+
+
 
 
     //LIFE FORMS
@@ -70,6 +73,7 @@ public class Content {
         lifeForm = new Texture(Gdx.files.internal("tiles/lifeform.png"));
         collision = new Texture(Gdx.files.internal("tiles/collision.png"));
         nullTile = new TextureRegion();
+        particle = new Texture(Gdx.files.internal("tiles/Dot.png"));
     }
 
     private static void loadTileSheet(){
