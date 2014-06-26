@@ -2,7 +2,6 @@ package com.allen.george.artificiallife.simulation.world.map.layers;
 
 import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.simulation.world.map.Tile;
-import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -18,7 +17,7 @@ public class BackgroundLayer extends MapLayer {
         tiles = new int[width * height];
         for(int y = 0; y < height; y ++) {
             for (int x = 0; x < width; x++) {
-                tiles[x + y * width]= Tile.NULL_TILE;
+                tiles[x + y * width]= Tile.NULL_TILE.getTileID();
             }
         }
         generateBackground();
@@ -28,16 +27,16 @@ public class BackgroundLayer extends MapLayer {
     private void generateBackground(){
         for(int y = 0; y < height; y ++) {
             for (int x = 0; x < width; x++) {
-                if (tiles[x + y * width] == Tile.NULL_TILE) {
+                if (tiles[x + y * width] == Tile.NULL_TILE.getTileID()) {
                     //generate grassy bits
                     if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
-                        tiles[x + y * width] = Tile.GRASS_TILE_DETAIL1;
+                        tiles[x + y * width] = Tile.GRASS_TILE_DETAIL1.getTileID();
                     } else if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
-                        tiles[x + y * width] = Tile.GRASS_TILE_DETAIL2;
+                        tiles[x + y * width] = Tile.GRASS_TILE_DETAIL2.getTileID();
                     } else if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
-                        tiles[x + y * width] = Tile.GRASS_TILE_DETAIL3;
+                        tiles[x + y * width] = Tile.GRASS_TILE_DETAIL3.getTileID();
                     } else {
-                        tiles[x + y * width] = Tile.GRASS_TILE;
+                        tiles[x + y * width] = Tile.GRASS_TILE.getTileID();
                     }
                 }
             }
@@ -59,18 +58,7 @@ public class BackgroundLayer extends MapLayer {
 
         for (int y = minY; y < maxY; y++){
             for (int x = minX; x < maxX ; x++){
-                if(tiles[x + y * width] == Tile.GRASS_TILE){
-                    spriteBatch.draw(Content.grassTile,  x * Map.TILE_SIZE - scrollX,  y * Map.TILE_SIZE - scrollY);
-                }
-                if(tiles[x + y * width]== Tile.GRASS_TILE_DETAIL1){
-                    spriteBatch.draw(Content.grassTileDeatail1,  x * Map.TILE_SIZE - scrollX,  y * Map.TILE_SIZE - scrollY);
-                }
-                if(tiles[x + y * width] == Tile.GRASS_TILE_DETAIL2){
-                    spriteBatch.draw(Content.grassTileDeatail2,  x * Map.TILE_SIZE - scrollX,  y * Map.TILE_SIZE - scrollY);
-                }
-                if(tiles[x + y * width] == Tile.GRASS_TILE_DETAIL3){
-                    spriteBatch.draw(Content.grassTileDeatail3,  x * Map.TILE_SIZE - scrollX,  y * Map.TILE_SIZE - scrollY);
-                }
+                Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
             }
         }
     }

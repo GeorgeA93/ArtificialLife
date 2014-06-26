@@ -18,7 +18,7 @@ public class ShadowLayer extends MapLayer{
         tiles = new int[width * height];
         for(int y = 0; y < height; y ++) {
             for (int x = 0; x < width; x++) {
-                tiles[x + y * width]= Tile.NULL_TILE;
+                tiles[x + y * width]= Tile.NULL_TILE.getTileID();
             }
         }
     }
@@ -41,18 +41,7 @@ public class ShadowLayer extends MapLayer{
 
         for (int y = minY; y < maxY; y++){
             for (int x = minX; x < maxX ; x++){
-                if(tiles[x + y * width] == Tile.tree_bottom_left){
-                    spriteBatch.draw(Content.tree_bottom_left,  x * map.TILE_SIZE - scrollX,  y * map.TILE_SIZE - scrollY);
-                }
-                if(tiles[x + y * width] == Tile.tree_bottom_right){
-                    spriteBatch.draw(Content.tree_bottom_right,  x * map.TILE_SIZE - scrollX,  y * map.TILE_SIZE - scrollY);
-                }
-                if(tiles[x + y * width] == Tile.tree_dead_bottom_left){
-                    spriteBatch.draw(Content.tree_dead_bottom_left,  x * map.TILE_SIZE - scrollX,  y * map.TILE_SIZE - scrollY);
-                }
-                if(tiles[x + y * width] == Tile.tree_dead_bottom_right){
-                    spriteBatch.draw(Content.tree_dead_bottom_right,  x * map.TILE_SIZE - scrollX,  y * map.TILE_SIZE - scrollY);
-                }
+                Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
             }
         }
     }

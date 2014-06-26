@@ -13,6 +13,7 @@ public class Content {
     private static Texture tileSheet;
     private static Texture tree1sheet;
     private static Texture tree1DeadSheet;
+    public static TextureRegion nullTile;
     public static TextureRegion grassTile;
     public static TextureRegion grassTileDeatail1;
     public static TextureRegion grassTileDeatail2;
@@ -68,11 +69,13 @@ public class Content {
         loadTileSheet();
         lifeForm = new Texture(Gdx.files.internal("tiles/lifeform.png"));
         collision = new Texture(Gdx.files.internal("tiles/collision.png"));
+        nullTile = new TextureRegion();
     }
 
     private static void loadTileSheet(){
         tileSheet = new Texture(Gdx.files.internal("tiles/terrain.png"));
         TextureRegion[][] tileSheetMain = split(tileSheet, 32, 32);
+
 
         waterTopLeft = tileSheetMain[27][2];
         waterTopRight = tileSheetMain[29][2];

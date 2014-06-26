@@ -5,6 +5,8 @@
 package com.allen.george.artificiallife.main;
 
 import javax.swing.border.*;
+
+import com.allen.george.artificiallife.main.forms.NewSimulation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas;
 
@@ -40,6 +42,8 @@ public class GUI extends JFrame implements ActionListener, ChangeListener {
         } else if (e.getActionCommand().equals("About")) {
 
         } else if (e.getActionCommand().equals("New")){
+            NewSimulation newSimulation = new NewSimulation();
+            newSimulation.setVisible(true);
 
         } else if(e.getActionCommand().equals("Running")){
             if(!artificialLife.isRunning()){

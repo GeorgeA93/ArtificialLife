@@ -18,7 +18,7 @@ public class ForegroundLayer extends MapLayer {
         tiles = new int[width * height];
         for(int y = 0; y < height; y ++) {
             for (int x = 0; x < width; x++) {
-                tiles[x + y * width]= Tile.NULL_TILE;
+                tiles[x + y * width]= Tile.NULL_TILE.getTileID();
             }
         }
     }
@@ -45,64 +45,7 @@ public class ForegroundLayer extends MapLayer {
 
         for (int y = minY; y < maxY; y++) {
             for (int x = minX; x < maxX; x++) {
-                if (tiles[x + y * width] == Tile.LONG_ROCK_TOP) {
-                    spriteBatch.draw(Content.longRockTop, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_bottom_rmiddle_left) {
-                    spriteBatch.draw(Content.tree_bottom_rmiddle_left, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_bottom_rmiddle) {
-                    spriteBatch.draw(Content.tree_bottom_rmiddle, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_bottom_rmiddle_right) {
-                    spriteBatch.draw(Content.tree_bottom_rmiddle_right, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_top_rmiddle) {
-                    spriteBatch.draw(Content.tree_top_rmiddle, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_top_rmiddle_right) {
-                    spriteBatch.draw(Content.tree_top_rmiddle_right, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_top_rmiddle_left) {
-                    spriteBatch.draw(Content.tree_top_rmiddle_left, x * Map.TILE_SIZE- scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_top_left) {
-                    spriteBatch.draw(Content.tree_top_left, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_top_right) {
-                    spriteBatch.draw(Content.tree_top_right, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_top_middle) {
-                    spriteBatch.draw(Content.tree_top_middle, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-
-                if (tiles[x + y * width] == Tile.tree_dead_bottom_rmiddle_left) {
-                    spriteBatch.draw(Content.tree_dead_bottom_rmiddle_left, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_dead_bottom_rmiddle) {
-                    spriteBatch.draw(Content.tree_dead_bottom_rmiddle, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_dead_bottom_rmiddle_right) {
-                    spriteBatch.draw(Content.tree_dead_bottom_rmiddle_right, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_dead_top_rmiddle) {
-                    spriteBatch.draw(Content.tree_dead_top_rmiddle, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_dead_top_rmiddle_right) {
-                    spriteBatch.draw(Content.tree_dead_top_rmiddle_right, x *Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_dead_top_rmiddle_left) {
-                    spriteBatch.draw(Content.tree_dead_top_rmiddle_left, x *Map.TILE_SIZE - scrollX, y *Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_dead_top_left) {
-                    spriteBatch.draw(Content.tree_dead_top_left, x * Map.TILE_SIZE - scrollX, y *Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_dead_top_right) {
-                    spriteBatch.draw(Content.tree_dead_top_right, x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
-                if (tiles[x + y * width] == Tile.tree_dead_top_middle) {
-                    spriteBatch.draw(Content.tree_dead_top_middle, x *Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-                }
+                Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
 
             }
 
