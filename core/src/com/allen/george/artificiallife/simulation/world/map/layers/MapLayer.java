@@ -1,6 +1,7 @@
 package com.allen.george.artificiallife.simulation.world.map.layers;
 
 import com.allen.george.artificiallife.simulation.world.map.Map;
+import com.allen.george.artificiallife.simulation.world.map.objects.*;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -30,7 +31,11 @@ public abstract class MapLayer {
     public void generateDeadTree(int xx, int yy){
 
     }
-    public void generateWater(int xx, int yy){
+    public void generateWater(int xx, int yy, int ww){
+
+    }
+
+    public void removeWater(com.allen.george.artificiallife.simulation.world.map.objects.Object o, int xx, int yy, int w){
 
     }
 

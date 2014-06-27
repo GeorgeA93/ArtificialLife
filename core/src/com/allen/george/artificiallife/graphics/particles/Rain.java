@@ -52,6 +52,8 @@ public class Rain extends BaseParticle {
     @Override
     public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera) {
         if(position.x < 0 || position.x > width) return;
+        spriteBatch.setColor(0,0,1,0.3f);
         spriteBatch.draw(Content.particle, position.x * Map.TILE_SIZE - scrollX  , position.y * Map.TILE_SIZE - scrollY , scaleX, scaleY, rotation, direction, 0, 0);
+        spriteBatch.setColor(1,1,1,1);
     }
 }

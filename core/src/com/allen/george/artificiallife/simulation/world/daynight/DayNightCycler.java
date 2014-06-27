@@ -29,8 +29,6 @@ public class DayNightCycler {
 
     private int width, height;
 
-
-
     private World world;
 
     public DayNightCycler(World world){
@@ -38,8 +36,6 @@ public class DayNightCycler {
         this.width = world.getWidth();
         this.height = world.getHeight();
         this.shapeRenderer = new ShapeRenderer();
-
-
     }
 
     public void update(){

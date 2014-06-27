@@ -22,7 +22,7 @@ public class WeatherManager {
     public WeatherManager(World world){
         this.world = world;
         this.isRaining = false;
-        this.particleManager = new ParticleManager(500, world, isRaining);
+        this.particleManager = new ParticleManager(700, world, isRaining);
         cyclesToRain = new int[world.getDayNightCycler().getMaxCycles()];
         for(int i =0; i < world.getDayNightCycler().getMaxCycles(); i ++){
             cyclesToRain[i] = 1 + (int)(Math.random() * ( 10 -  1) + 1);
@@ -30,6 +30,7 @@ public class WeatherManager {
     }
 
     public void update(){
+        if(world.getDayNightCycler().getCycles() >= world.getDayNightCycler().getMaxCycles())return;
         if(cyclesToRain[world.getDayNightCycler().getCycles()] > 6){
             isRaining = true;
         } else {
@@ -40,7 +41,9 @@ public class WeatherManager {
     }
 
     public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera){
-       particleManager.render(spriteBatch, scrollX, scrollY, camera, isRaining);
+
+        particleManager.render(spriteBatch, scrollX, scrollY, camera, isRaining);
+
     }
 
     public boolean isRaining() {

@@ -2,7 +2,7 @@ package com.allen.george.artificiallife.simulation.world.map.layers;
 
 import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.simulation.world.map.Tile;
-import com.allen.george.artificiallife.simulation.world.map.objects.Tree;
+import com.allen.george.artificiallife.simulation.world.map.objects.*;
 import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -33,7 +33,7 @@ public class InteractiveLayer extends MapLayer{
                 if (tiles[x + y * width] == Tile.NULL_TILE.getTileID()) {
                     //water
                     if((random.nextInt(600) > 598) && ((x + 4) < width) && ((y + 4) < height)){
-                        generateWater(x, y);
+                        generateWater(x, y, 0);
                     }
                     //big rock
                     if(( random.nextInt(600) > 598) && ((x + 2) < width) && ((y + 2) < height) &&
@@ -81,8 +81,12 @@ public class InteractiveLayer extends MapLayer{
         }
     }
 
-    public void generateWater(int xx, int yy){
-        int w = 2 + (int)(Math.random() * ((4 - 2) + 1));
+    public void generateWater(int xx, int yy, int ww){
+        int w = ww;
+        if(w == 0){
+           w = 2 + (int)(Math.random() * ((4 - 2) + 1));
+        }
+
         if(w == 2  &&
                 tiles[xx + yy * width] == Tile.NULL_TILE.getTileID() &&
                 tiles[(xx + 1) + yy * width]  == Tile.NULL_TILE.getTileID() &&
@@ -93,6 +97,7 @@ public class InteractiveLayer extends MapLayer{
             tiles[(xx + 1) + yy * width] = Tile.WATER_TILE_BOTTOM_RIGHT.getTileID();
             tiles[xx + (yy + 1) * width] = Tile.WATER_TILE_TOP_LEFT.getTileID();
             tiles[(xx + 1) + (yy + 1) * width] = Tile.WATER_TILE_TOP_RIGHT.getTileID();
+            map.addObject(new Water(w, w, new Vector2(xx, yy), map.getWorld()));
         }
         else if(w == 3 &&
                 tiles[xx + yy * width] == Tile.NULL_TILE.getTileID() &&
@@ -114,6 +119,7 @@ public class InteractiveLayer extends MapLayer{
             tiles[(xx + 1) + (yy + 2) * width] = Tile.WATER_TILE_TOP.getTileID();
             tiles[(xx + 2) + (yy + 1) * width] = Tile.WATER_TILE_RIGHT.getTileID();
             tiles[(xx + 2) + (yy + 2) * width] = Tile.WATER_TILE_TOP_RIGHT.getTileID();
+            map.addObject(new Water(w, w, new Vector2(xx, yy), map.getWorld()));
         }
         else if(w == 4 &&
                 tiles[xx + yy * width] == Tile.NULL_TILE.getTileID() &&
@@ -150,6 +156,7 @@ public class InteractiveLayer extends MapLayer{
             tiles[(xx + 3) + (yy + 1) * width] = Tile.WATER_TILE_RIGHT.getTileID();
             tiles[(xx + 3) + (yy + 2) * width] = Tile.WATER_TILE_RIGHT.getTileID();
             tiles[(xx + 3) + (yy + 3) * width] = Tile.WATER_TILE_TOP_RIGHT.getTileID();
+            map.addObject(new Water(w, w, new Vector2(xx, yy), map.getWorld()));
         }
     }
 
@@ -195,6 +202,45 @@ public class InteractiveLayer extends MapLayer{
         map.getForegroundLayer().addTile(xx + 2, yy + 3, Tile.tree_dead_top_right.getTileID());
     }
 
+    public void removeWater(com.allen.george.artificiallife.simulation.world.map.objects.Object o, int xx, int yy, int  w){
+        map.removeObject(o);
+        if(w == 4){
+            tiles[xx + yy * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 1) + yy * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 2) + yy * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 3) + yy * width] = Tile.NULL_TILE.getTileID();
+            tiles[xx + (yy + 1) * width] = Tile.NULL_TILE.getTileID();
+            tiles[xx + (yy + 2) * width] = Tile.NULL_TILE.getTileID();
+            tiles[xx + (yy + 3) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 1) + (yy + 1) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 1) + (yy + 2) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 1) + (yy + 3) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 2) + (yy + 1) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 2) + (yy + 3) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 2) + (yy + 2) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 3) + (yy + 1) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 3) + (yy + 2) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 3) + (yy + 3) * width] = Tile.NULL_TILE.getTileID();
+            generateWater(xx, yy, 3);
+        } else if(w == 3){
+            tiles[xx + yy * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 1) + yy * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 2) + yy * width] = Tile.NULL_TILE.getTileID();
+            tiles[xx + (yy + 1) * width] = Tile.NULL_TILE.getTileID();
+            tiles[xx + (yy + 2) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 1) + (yy + 1) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 1) + (yy + 2) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 2) + (yy + 1) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 2) + (yy + 2) * width] = Tile.NULL_TILE.getTileID();
+            generateWater(xx, yy, 2);
+        } else if(w == 2){
+            tiles[xx + yy * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 1) + yy * width] = Tile.NULL_TILE.getTileID();
+            tiles[xx + (yy + 1) * width] = Tile.NULL_TILE.getTileID();
+            tiles[(xx + 1) + (yy + 1) * width] = Tile.NULL_TILE.getTileID();
+        }
+    }
+
     public void addTile(int x, int y, int texId){
         tiles[x + y * width] = texId;
     }
@@ -202,7 +248,6 @@ public class InteractiveLayer extends MapLayer{
     public int getTileAt(int x, int y){
         return  tiles[x + y * width];
     }
-
 
 
     public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera) {

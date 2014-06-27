@@ -41,7 +41,7 @@ public class ParticleManager {
                 p.update();
             if (p.removed) {
                 if(p.position.x > 3 && p.position.x < world.getWidth() - 3 && p.position.y > 3 && p.position.y < world.getHeight() - 3 && random.nextInt(200) > 198){
-                    world.getMap().getInteractiveLayer().generateWater((int)p.position.x,(int)p.position.y);
+                    world.getMap().getInteractiveLayer().generateWater((int)p.position.x,(int)p.position.y, 0);
                 }
                 particles.remove(i--);
             }

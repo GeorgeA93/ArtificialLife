@@ -19,11 +19,11 @@ public class Tree extends Object {
 
     public void update(){
         if(world.getDayNightCycler().getCycles() == cycleToChange){
-            if(dead){
+            if(dead && world.getWeatherManager().isRaining()){
                 dead = false;
                 this.cycleToChange = (cycleToChange + 2) + (int)(Math.random() * ((world.getDayNightCycler().getMaxCycles() - (cycleToChange + 2)) + 1));
                 world.getMap().getInteractiveLayer().generateTree((int)position.x, (int)position.y);
-            } else {
+            } else if(!dead && !world.getWeatherManager().isRaining()){
                 dead = true;
                 this.cycleToChange = (cycleToChange + 2) + (int)(Math.random() * ((world.getDayNightCycler().getMaxCycles() - (cycleToChange + 2)) + 1));
                 world.getMap().getInteractiveLayer().generateDeadTree((int)position.x, (int)position.y);

@@ -79,6 +79,10 @@ public class Map {
         mapObjects.add(o);
     }
 
+    public void removeObject(Object o){
+        mapObjects.remove(o);
+    }
+
     public void update(){
         for (int i = 0; i < mapObjects.size(); i++) {
             Object o = mapObjects.get(i);
