@@ -1,6 +1,7 @@
 package com.allen.george.artificiallife.main;
 
 
+import com.allen.george.artificiallife.main.forms.MainGui;
 import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -10,7 +11,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import org.lwjgl.Sys;
 
 
 public class ArtificialLife extends ApplicationAdapter {
@@ -18,7 +18,7 @@ public class ArtificialLife extends ApplicationAdapter {
     //Graphics
 	private SpriteBatch spriteBatch;
     private World world;
-    private GUI gui;
+    private MainGui gui;
 
     //Camera
     private OrthographicCamera camera;
@@ -30,7 +30,7 @@ public class ArtificialLife extends ApplicationAdapter {
     private boolean running;
 
 
-    public ArtificialLife(GUI gui){
+    public ArtificialLife(MainGui gui){
         this.gui = gui;
         running = false;
     }
@@ -53,7 +53,7 @@ public class ArtificialLife extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if(running && world.getDayNightCycler().getCycles() < world.getDayNightCycler().getMaxCycles()){
-            update();
+            update(world.getDayNightCycler().getTimeSpeed());
         }
 
         //render
@@ -63,10 +63,11 @@ public class ArtificialLife extends ApplicationAdapter {
 
 	}
 
-    public void update(){
+    public void update(double timeSpeed){
+
         gui.setFPS(String.valueOf(Gdx.graphics.getFramesPerSecond())); //set the fps
         camera.update();
-        world.update();
+        world.update(timeSpeed);
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
             camera.position.set(new Vector3(camera.position.x,camera.position.y + moveSpeed,camera.position.z));
@@ -87,14 +88,14 @@ public class ArtificialLife extends ApplicationAdapter {
         if(Gdx.input.isKeyPressed(Input.Keys.UP) && camera.zoom > 2){ //
            camera.zoom -= zoomSpeed;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && camera.zoom < 5){ //
+        if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && camera.zoom < 10){ //was 5
            camera.zoom += zoomSpeed;
         }
 
         //UPDATE THE GUI
         gui.setTime(world.getDayNightCycler().getTimeString());
         gui.setCurrentCycle(world.getDayNightCycler().getCycles());
-
+        gui.setWeather(world.getWeatherManager().getCurrentWeather());
     }
 
     public World getWorld() {

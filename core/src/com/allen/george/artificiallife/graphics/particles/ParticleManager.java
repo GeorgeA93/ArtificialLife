@@ -28,7 +28,7 @@ public class ParticleManager {
         }
     }
 
-    public void update(boolean raining){
+    public void update(boolean raining, double timeSpeed){
         if(raining){
             if(particles.size() < maxParticles) particles.add(new Rain(world));
         }
@@ -38,7 +38,7 @@ public class ParticleManager {
             if (p == null)
                 break;
             if (!p.removed)
-                p.update();
+                p.update(timeSpeed);
             if (p.removed) {
                 if(p.position.x > 3 && p.position.x < world.getWidth() - 3 && p.position.y > 3 && p.position.y < world.getHeight() - 3 && random.nextInt(200) > 198){
                     world.getMap().getInteractiveLayer().generateWater((int)p.position.x,(int)p.position.y, 0);

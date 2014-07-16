@@ -1,5 +1,6 @@
 package com.allen.george.artificiallife.simulation.world;
 
+import com.allen.george.artificiallife.ga.Evolver;
 import com.allen.george.artificiallife.graphics.particles.BaseParticle;
 import com.allen.george.artificiallife.graphics.particles.Rain;
 import com.allen.george.artificiallife.simulation.life.LifeForm;
@@ -9,8 +10,10 @@ import com.allen.george.artificiallife.simulation.world.weather.WeatherManager;
 import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import org.lwjgl.Sys;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by George on 23/06/2014.
@@ -23,8 +26,8 @@ public class World {
 
     private DayNightCycler dayNightCycler;
     private WeatherManager weatherManager;
+    private Evolver evolver;
 
-    private LifeForm lifeForm;
 
 
     public World(int width, int height){
@@ -38,25 +41,22 @@ public class World {
         dayNightCycler = new DayNightCycler(this);
         weatherManager = new WeatherManager(this);
         map = new Map(this);
-        //generate population
-        lifeForm = new LifeForm("0110011", this);
+        evolver = new Evolver(this);
     }
 
-    public void update(){
+
+    public void update(double timeSpeed){
+        evolver.update(timeSpeed);
         dayNightCycler.update();
-        weatherManager.update();
+        weatherManager.update(timeSpeed);
         map.update();
-        lifeForm.update();
-
-
     }
 
 
     public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera){
         spriteBatch.begin();
         map.renderLayer(spriteBatch, scrollX, scrollY, camera, map.getBackgroundLayer());
-
-        lifeForm.render(spriteBatch, scrollX, scrollY);
+        evolver.render(spriteBatch, scrollX, scrollY, camera);
         map.renderObjects(spriteBatch, scrollX, scrollY, camera);
         map.renderLayer(spriteBatch, scrollX, scrollY, camera, map.getShadowLayer());
         map.renderLayer(spriteBatch, scrollX, scrollY, camera, map.getInteractiveLayer());
@@ -95,4 +95,6 @@ public class World {
     public WeatherManager getWeatherManager() {
         return weatherManager;
     }
+
+
 }

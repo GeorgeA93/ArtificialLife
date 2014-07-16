@@ -1,11 +1,9 @@
 package com.allen.george.artificiallife.graphics.particles;
 
-import com.allen.george.artificiallife.main.GUI;
 import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.utils.Content;
 import com.allen.george.artificiallife.utils.MathHelper;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -34,13 +32,13 @@ public class Rain extends BaseParticle {
     }
 
     @Override
-    public void update() {
+    public void update(double timeSpeed) {
         lifeTick ++;
         if(lifeTick > lifeTime) remove();
         if(position.x > width * Map.TILE_SIZE) remove();
         if(position.y < 0 ) remove();
 
-        speed =  1000 * (float)world.getDayNightCycler().getTimeSpeed();
+        speed =  1000 * (float)timeSpeed;
         if(MathHelper.sign(speed) == -1){
             speed = speed * -1;
         }

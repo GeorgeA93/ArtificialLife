@@ -2,6 +2,7 @@ package com.allen.george.artificiallife.simulation.life;
 
 import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.utils.Content;
+import com.allen.george.artificiallife.utils.MathHelper;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,21 +19,27 @@ public class LifeForm {
 
     private boolean up, down, left, right;
 
+
     public LifeForm(String bitString, World world){
         this.world = world;
-        this.position = new Vector2(20 * 32 , 20 * 32);
+        this.position = new Vector2(0,0);
+        this.position.x = (1 + (int)(Math.random() * (((world.getWidth() - 1) - 1) + 1))) * 32;
+        this.position.y = (1 + (int)(Math.random() * (((world.getHeight() - 1) - 1) + 1))) * 32;
         this.up = down = left = right = false;
+
     }
 
-    public void update(){
-
+    public void update(double timeSpeed){
+        if(up) position.y -= MathHelper.sign(timeSpeed);
     }
 
 
     public void render(SpriteBatch spriteBatch, int scrollX, int scrollY){
+        spriteBatch.draw(Content.lifeForm,  position.x - scrollX,  position.y - scrollY);
+    }
 
-        //spriteBatch.draw(Content.lifeForm,  position.x - scrollX,  position.y - scrollY);
-
+    public Vector2 getPosition(){
+        return position;
     }
 
 }

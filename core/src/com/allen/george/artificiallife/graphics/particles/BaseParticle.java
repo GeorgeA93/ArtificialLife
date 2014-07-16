@@ -27,7 +27,7 @@ public abstract class BaseParticle {
     public Color color;
     public boolean removed = false;
 
-    public abstract void update();
+    public abstract void update(double timeSpeed);
 
     public abstract void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera);
 

@@ -29,7 +29,7 @@ public class WeatherManager {
         }
     }
 
-    public void update(){
+    public void update(double timeSpeed){
         if(world.getDayNightCycler().getCycles() >= world.getDayNightCycler().getMaxCycles())return;
         if(cyclesToRain[world.getDayNightCycler().getCycles()] > 6){
             isRaining = true;
@@ -37,7 +37,7 @@ public class WeatherManager {
             isRaining = false;
         }
 
-        particleManager.update(isRaining);
+        particleManager.update(isRaining, timeSpeed);
     }
 
     public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera){
@@ -48,5 +48,12 @@ public class WeatherManager {
 
     public boolean isRaining() {
         return isRaining;
+    }
+
+    public String getCurrentWeather(){
+        if(isRaining) return "Raining";
+        if(!isRaining) return "Dry";
+
+        return "Dry";
     }
 }
