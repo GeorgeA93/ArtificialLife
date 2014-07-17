@@ -4,6 +4,7 @@ package com.allen.george.artificiallife.main;
 import com.allen.george.artificiallife.main.forms.MainGui;
 import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.utils.Content;
+import com.allen.george.artificiallife.utils.SimulationSettings;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -33,6 +34,8 @@ public class ArtificialLife extends ApplicationAdapter {
     public ArtificialLife(MainGui gui){
         this.gui = gui;
         running = false;
+        gui.setRunningRadio(running);
+        gui.setSimulationSpeed(SimulationSettings.INIT_SPEED);
     }
 	
 	@Override
@@ -43,7 +46,7 @@ public class ArtificialLife extends ApplicationAdapter {
         camera.zoom = 2;
 
 		spriteBatch = new SpriteBatch();
-        world = new World(100,100);
+        world = new World(SimulationSettings.WORLD_WIDTH,SimulationSettings.WORLD_HEIGHT);
 	}
 
 	@Override
@@ -51,6 +54,7 @@ public class ArtificialLife extends ApplicationAdapter {
         //clear the screen
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 
         if(running && world.getDayNightCycler().getCycles() < world.getDayNightCycler().getMaxCycles()){
             update(world.getDayNightCycler().getTimeSpeed());
@@ -60,7 +64,6 @@ public class ArtificialLife extends ApplicationAdapter {
         spriteBatch.setProjectionMatrix(camera.projection);
         spriteBatch.setTransformMatrix(camera.view);
         world.render(spriteBatch, (int) scrollOffsetX, (int) scrollOffsetY, camera);
-
 	}
 
     public void update(double timeSpeed){

@@ -28,9 +28,8 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
         } else if (e.getActionCommand().equals("About")) {
 
         } else if (e.getActionCommand().equals("New")) {
-            // NewSimulation newSimulation = new NewSimulation();
-            // newSimulation.setVisible(true);
 
+           newSimulation.setVisible(true);
         } else if (e.getActionCommand().equals("Running")) {
             if (!artificialLife.isRunning()) {
                 artificialLife.setRunning(true);
@@ -91,6 +90,14 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
         canvas.getCanvas().setSize((int)openglPanel.getSize().getWidth(), (int)openglPanel.getSize().getHeight());
     }
 
+    public void setRunningRadio(boolean res){
+        this.runningRadio.setSelected(res);
+    }
+
+    public void setSimulationSpeed(int speed){
+        this.simulationSpeed.setValue(speed);
+    }
+
     /**
      * Create the frame.
      */
@@ -104,7 +111,9 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
         setJMenuBar(menuBar);
 
         menuBar.add(fileMenu);
+        newMenuItem.addActionListener(this);
         exitMenuItem.addActionListener(this);
+        fileMenu.add(newMenuItem);
         fileMenu.add(exitMenuItem);
 
         menuBar.add(helpMenu);
@@ -183,6 +192,7 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
     private JMenuBar menuBar = new JMenuBar();
     private JMenu fileMenu = new JMenu("File");
     private JMenuItem exitMenuItem = new JMenuItem("Exit");
+    private JMenuItem newMenuItem = new JMenuItem("New");
     private JMenu helpMenu = new JMenu("Help");
     private JMenuItem aboutMenuItem = new JMenuItem("About");
     private JPanel evolutionControls = new JPanel();
@@ -200,5 +210,23 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
     private ArtificialLife artificialLife;
     private LwjglAWTCanvas canvas;
     private Container openglContainer;
+
+    //Forms
+    private NewSimulation newSimulation = new NewSimulation(this);
+
+    public ArtificialLife getArtificialLife(){
+        return this.artificialLife;
+    }
+
+    public void setArtificialLife(ArtificialLife artificialLife){
+       this.artificialLife = artificialLife;
+        canvas = new LwjglAWTCanvas(artificialLife);
+        canvas.getCanvas().setSize(0, 0);
+        openglContainer.remove(0);
+        openglContainer.add(canvas.getCanvas());
+        openglPanel.remove(0);
+        openglPanel.add(openglContainer);
+        resizeOpenGL();
+    }
 
 }

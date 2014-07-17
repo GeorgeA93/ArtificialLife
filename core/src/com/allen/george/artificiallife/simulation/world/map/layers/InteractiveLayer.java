@@ -4,6 +4,7 @@ import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.simulation.world.map.Tile;
 import com.allen.george.artificiallife.simulation.world.map.objects.*;
 import com.allen.george.artificiallife.utils.Content;
+import com.allen.george.artificiallife.utils.SimulationSettings;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -32,50 +33,60 @@ public class InteractiveLayer extends MapLayer{
             for(int x = 0; x < width; x ++) {
                 if (tiles[x + y * width] == Tile.NULL_TILE.getTileID()) {
                     //water
-                    if((random.nextInt(600) > 598) && ((x + 4) < width) && ((y + 4) < height)){
-                        generateWater(x, y, 0);
+                    if(SimulationSettings.GEN_WATER){
+                        if((random.nextInt(600) > 598) && ((x + 4) < width) && ((y + 4) < height)){
+                            generateWater(x, y, 0);
+                        }
                     }
-                    //big rock
-                    if(( random.nextInt(600) > 598) && ((x + 2) < width) && ((y + 2) < height) &&
-                            tiles[x + y * width] == Tile.NULL_TILE.getTileID() &&
-                            tiles[(x + 1) + y * width] == Tile.NULL_TILE.getTileID() &&
-                            tiles[x + (y + 1) * width] == Tile.NULL_TILE.getTileID() &&
-                            tiles[(x + 1) + (y + 1) * width] == Tile.NULL_TILE.getTileID()){
-                        generateBigRock(x, y);
+                    if(SimulationSettings.GEN_LARGE_ROCKS){
+                        //big rock
+                        if(( random.nextInt(600) > 598) && ((x + 2) < width) && ((y + 2) < height) &&
+                                tiles[x + y * width] == Tile.NULL_TILE.getTileID() &&
+                                tiles[(x + 1) + y * width] == Tile.NULL_TILE.getTileID() &&
+                                tiles[x + (y + 1) * width] == Tile.NULL_TILE.getTileID() &&
+                                tiles[(x + 1) + (y + 1) * width] == Tile.NULL_TILE.getTileID()){
+                            generateBigRock(x, y);
+                        }
                     }
-                    if(( random.nextInt(600) > 598) && ((y + 2) < height) &&
-                            tiles[x + y * width] == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x, y + 1) == Tile.NULL_TILE.getTileID()){
-                        generateLongRock(x, y);
-                    }
-                    if(( random.nextInt(30) > 28) && ((x + 2) < width) && ((y + 3) < height) &&
-                            tiles[(x + 1) + y * width] == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x, y + 1) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x + 1, y + 1) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x + 2, y + 1) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x, y + 2) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x + 1, y + 2) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x + 2, y + 2) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x, y + 3) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x + 1, y + 3) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x + 2, y + 3) == Tile.NULL_TILE.getTileID() ){
-                        generateTree(x, y);
-                        map.addObject(new Tree(3, 4, new Vector2(x, y), map.getWorld(), false));
-                    }
-                    if(( random.nextInt(300) > 298) && ((x + 2) < width) && ((y + 3) < height) &&
-                            tiles[(x + 1) + y * width] == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x, y + 1) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x + 1, y + 1) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x + 2, y + 1) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x, y + 2) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x + 1, y + 2) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x + 2, y + 2) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x, y + 3) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x + 1, y + 3) == Tile.NULL_TILE.getTileID() &&
-                            map.getForegroundLayer().getTileAt(x + 2, y + 3) == Tile.NULL_TILE.getTileID()){
-                        generateDeadTree(x, y);
-                        map.addObject(new Tree(3, 4, new Vector2(x, y), map.getWorld(), true));
-                    }
+                   if(SimulationSettings.GEN_SMALL_ROCKS){
+                       if(( random.nextInt(600) > 598) && ((y + 2) < height) &&
+                               tiles[x + y * width] == Tile.NULL_TILE.getTileID() &&
+                               map.getForegroundLayer().getTileAt(x, y + 1) == Tile.NULL_TILE.getTileID()){
+                           generateLongRock(x, y);
+                       }
+                   }
+                  if(SimulationSettings.GEN_TREES){
+                      if(( random.nextInt(30) > 28) && ((x + 2) < width) && ((y + 3) < height) &&
+                              tiles[(x + 1) + y * width] == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x, y + 1) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x + 1, y + 1) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x + 2, y + 1) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x, y + 2) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x + 1, y + 2) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x + 2, y + 2) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x, y + 3) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x + 1, y + 3) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x + 2, y + 3) == Tile.NULL_TILE.getTileID() ){
+                          generateTree(x, y);
+                          map.addObject(new Tree(3, 4, new Vector2(x, y), map.getWorld(), false));
+                      }
+                  }
+                  if(SimulationSettings.GEN_DEAD_TREES){
+                      if(( random.nextInt(300) > 298) && ((x + 2) < width) && ((y + 3) < height) &&
+                              tiles[(x + 1) + y * width] == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x, y + 1) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x + 1, y + 1) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x + 2, y + 1) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x, y + 2) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x + 1, y + 2) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x + 2, y + 2) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x, y + 3) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x + 1, y + 3) == Tile.NULL_TILE.getTileID() &&
+                              map.getForegroundLayer().getTileAt(x + 2, y + 3) == Tile.NULL_TILE.getTileID()){
+                          generateDeadTree(x, y);
+                          map.addObject(new Tree(3, 4, new Vector2(x, y), map.getWorld(), true));
+                      }
+                  }
                 }
             }
         }

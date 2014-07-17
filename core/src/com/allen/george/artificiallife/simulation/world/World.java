@@ -33,7 +33,6 @@ public class World {
     public World(int width, int height){
         this.width = width;
         this.height = height;
-
         generateNewWorld();
     }
 
@@ -42,6 +41,12 @@ public class World {
         weatherManager = new WeatherManager(this);
         map = new Map(this);
         evolver = new Evolver(this);
+    }
+
+    public void resetWorld(){
+        dayNightCycler = null;
+        weatherManager = null;
+        evolver = null;
     }
 
 

@@ -2,6 +2,7 @@ package com.allen.george.artificiallife.simulation.world.map.layers;
 
 import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.simulation.world.map.Tile;
+import com.allen.george.artificiallife.utils.SimulationSettings;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -29,14 +30,16 @@ public class BackgroundLayer extends MapLayer {
             for (int x = 0; x < width; x++) {
                 if (tiles[x + y * width] == Tile.NULL_TILE.getTileID()) {
                     //generate grassy bits
-                    if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
-                        tiles[x + y * width] = Tile.GRASS_TILE_DETAIL1.getTileID();
-                    } else if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
-                        tiles[x + y * width] = Tile.GRASS_TILE_DETAIL2.getTileID();
-                    } else if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
-                        tiles[x + y * width] = Tile.GRASS_TILE_DETAIL3.getTileID();
-                    } else {
-                        tiles[x + y * width] = Tile.GRASS_TILE.getTileID();
+                    if(SimulationSettings.GEN_GRASS){
+                        if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
+                            tiles[x + y * width] = Tile.GRASS_TILE_DETAIL1.getTileID();
+                        } else if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
+                            tiles[x + y * width] = Tile.GRASS_TILE_DETAIL2.getTileID();
+                        } else if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
+                            tiles[x + y * width] = Tile.GRASS_TILE_DETAIL3.getTileID();
+                        } else {
+                            tiles[x + y * width] = Tile.GRASS_TILE.getTileID();
+                        }
                     }
                 }
             }

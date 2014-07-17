@@ -5,6 +5,7 @@ import com.allen.george.artificiallife.graphics.particles.Rain;
 import com.allen.george.artificiallife.simulation.life.LifeForm;
 import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.utils.MathHelper;
+import com.allen.george.artificiallife.utils.SimulationSettings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,10 +23,10 @@ public class DayNightCycler {
     private ShapeRenderer shapeRenderer;
 
     private double time = 0.8;
-    private double timeSpeed = 0.0001;
+    private double timeSpeed = SimulationSettings.INIT_SPEED * 0.0001;
     private String timeString = "";
     private int cycles = 0;
-    private int maxCycles = 200;
+    private int maxCycles = SimulationSettings.NUM_DAYS;
 
     private int width, height;
 
