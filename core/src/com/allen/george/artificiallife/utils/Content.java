@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import javax.xml.soap.Text;
+
 /**
  * Created by George on 22/06/2014.
  */
@@ -64,6 +66,12 @@ public class Content {
 
     //LIFE FORMS
     public static Texture lifeForm;
+    public static Texture catSheet;
+    public static TextureRegion[][] cat;
+
+
+    //objects
+    public static Texture apple;
 
     //TEST
     public static Texture collision;
@@ -74,6 +82,10 @@ public class Content {
         collision = new Texture(Gdx.files.internal("tiles/collision.png"));
         nullTile = new TextureRegion();
         particle = new Texture(Gdx.files.internal("tiles/Dot.png"));
+        apple = new Texture(Gdx.files.internal("apple.png"));
+
+        catSheet = new Texture(Gdx.files.internal("cat.png"));
+        cat = split(catSheet, 32, 32);
     }
 
     private static void loadTileSheet(){

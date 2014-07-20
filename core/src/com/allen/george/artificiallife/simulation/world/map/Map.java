@@ -84,6 +84,13 @@ public class Map {
     }
 
     public void update(){
+
+        if(random.nextInt(10) > 2){
+            int x = (1 + (int)(Math.random() * (((world.getWidth() - 1) - 1) + 1)));
+           int y  = (1 + (int)(Math.random() * (((world.getHeight() - 1) - 1) + 1)));
+            addObject(new Apple(32, 32, new Vector2(x, y), world));
+        }
+
         for (int i = 0; i < mapObjects.size(); i++) {
             Object o = mapObjects.get(i);
             if (o == null)
@@ -162,5 +169,9 @@ public class Map {
 
     public World getWorld() {
         return world;
+    }
+
+    public ArrayList<Object> getMapObjects() {
+        return mapObjects;
     }
 }

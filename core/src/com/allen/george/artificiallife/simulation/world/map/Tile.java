@@ -72,6 +72,9 @@ public class Tile {
     public static final Tile tree_dead_bottom_middle = new Tile(42, Content.tree_dead_bottom_middle);
     public static final Tile tree_dead_bottom_right = new Tile(43, Content.tree_dead_bottom_right);
 
+    //OBJECTS
+    public static final Tile apple_tile = new Tile(44, null);
+
     private static Tile[] tiles = {
             NULL_TILE,
             GRASS_TILE,
@@ -117,6 +120,8 @@ public class Tile {
             tree_dead_bottom_left,
             tree_dead_bottom_middle,
             tree_dead_bottom_right,
+            apple_tile,
+
     };
 
 
@@ -137,6 +142,7 @@ public class Tile {
 
     public void renderTile(SpriteBatch spriteBatch, int id, int x, int y){
         if(id == 0) return;
+        if(getTexture(id) == null) return;
         spriteBatch.draw( getTexture(id) ,x, y);
     }
 

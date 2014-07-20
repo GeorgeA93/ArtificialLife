@@ -87,6 +87,10 @@ public class InteractiveLayer extends MapLayer{
                           map.addObject(new Tree(3, 4, new Vector2(x, y), map.getWorld(), true));
                       }
                   }
+                    if(( random.nextInt(300) > 298) && tiles[x  + y * width] == Tile.NULL_TILE.getTileID()){
+                        tiles[x + y * width] = Tile.apple_tile.getTileID();
+                        map.addObject(new Apple(32, 32, new Vector2(x , y ), map.getWorld()));
+                    }
                 }
             }
         }

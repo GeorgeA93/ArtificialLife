@@ -101,5 +101,7 @@ public class World {
         return weatherManager;
     }
 
-
+    public Evolver getEvolver() {
+        return evolver;
+    }
 }

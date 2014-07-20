@@ -4,6 +4,7 @@ package com.allen.george.artificiallife.main;
 import com.allen.george.artificiallife.main.forms.MainGui;
 import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.utils.Content;
+import com.allen.george.artificiallife.utils.MathHelper;
 import com.allen.george.artificiallife.utils.SimulationSettings;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -57,7 +58,11 @@ public class ArtificialLife extends ApplicationAdapter {
 
 
         if(running && world.getDayNightCycler().getCycles() < world.getDayNightCycler().getMaxCycles()){
-            update(world.getDayNightCycler().getTimeSpeed());
+            if(MathHelper.sign(world.getDayNightCycler().getTimeSpeed()) == -1){
+                update(-world.getDayNightCycler().getTimeSpeed());
+            } else {
+                update(world.getDayNightCycler().getTimeSpeed());
+            }
         }
 
         //render
