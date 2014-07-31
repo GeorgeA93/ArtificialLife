@@ -23,12 +23,12 @@ public class Node {
 
         } else if(nodeType == NodeType.DECISION){
             if(action == 0){
-                return lifeForm.canSmellFood();
+                return lifeForm.canSmellFood(20);
             }
             if(action == 1){
-                return lifeForm.canSmellFood();
+                return lifeForm.canSmellFood(20);
             }
-            if(action == 4){
+           /* if(action == 4){
                 return lifeForm.isFoodRight();
             }
             if(action == 3){
@@ -40,6 +40,7 @@ public class Node {
             if(action == 5){
                 return lifeForm.isFoodDown();
             }
+            */
         } else if(nodeType == NodeType.TERMINAL){
             if(action == 0){
                 lifeForm.moveUp();

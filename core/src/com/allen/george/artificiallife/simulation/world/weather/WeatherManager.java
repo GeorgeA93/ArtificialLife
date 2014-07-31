@@ -41,8 +41,8 @@ public class WeatherManager {
         particleManager.update(isRaining, timeSpeed);
     }
 
-    public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera){
-        particleManager.render(spriteBatch, scrollX, scrollY, camera, isRaining);
+    public void render(SpriteBatch spriteBatch, OrthographicCamera camera){
+        particleManager.render(spriteBatch, camera, isRaining);
     }
 
     public boolean isRaining() {

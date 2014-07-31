@@ -15,7 +15,7 @@ public class BehaviourTree {
 
         rootNode = new Node(NodeType.DECISION, 0);
         rootNode.setRightChild(new Node(NodeType.DECISION, 2));
-        rootNode.setLeftChild(new Node(NodeType.TERMINAL, 0));
+        rootNode.setLeftChild(new Node(NodeType.TERMINAL, 1));
 
         rootNode.getRightChild().setLeftChild(new Node(NodeType.DECISION, 3));
         rootNode.getRightChild().setRightChild(new Node(NodeType.TERMINAL, 0));
@@ -28,7 +28,6 @@ public class BehaviourTree {
 
         rootNode.getRightChild().getLeftChild().getLeftChild().getLeftChild().setLeftChild(new Node(NodeType.TERMINAL, 1));
         rootNode.getRightChild().getLeftChild().getLeftChild().getLeftChild().setRightChild(new Node(NodeType.TERMINAL, 2));
-
 
     }
 

@@ -75,11 +75,13 @@ public class Content {
 
     //TEST
     public static Texture collision;
+    public static Texture path;
 
     public static void load(){
         loadTileSheet();
         lifeForm = new Texture(Gdx.files.internal("tiles/lifeform.png"));
         collision = new Texture(Gdx.files.internal("tiles/collision.png"));
+        path = new Texture(Gdx.files.internal("tiles/path.png"));
         nullTile = new TextureRegion();
         particle = new Texture(Gdx.files.internal("tiles/Dot.png"));
         apple = new Texture(Gdx.files.internal("apple.png"));

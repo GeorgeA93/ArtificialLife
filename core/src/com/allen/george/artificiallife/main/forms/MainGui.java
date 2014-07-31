@@ -28,8 +28,11 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
         } else if (e.getActionCommand().equals("About")) {
 
         } else if (e.getActionCommand().equals("New")) {
-
-           newSimulation.setVisible(true);
+            newSimulation.setVisible(true);
+        } else if (e.getActionCommand().equals("Load Map")){
+            artificialLife.loadMap();
+        } else if (e.getActionCommand().equals("Save Map")){
+            artificialLife.saveMap();
         } else if (e.getActionCommand().equals("Running")) {
             if (!artificialLife.isRunning()) {
                 artificialLife.setRunning(true);
@@ -112,8 +115,12 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
 
         menuBar.add(fileMenu);
         newMenuItem.addActionListener(this);
+        loadMenutItem.addActionListener(this);
+        saveMenuItem.addActionListener(this);
         exitMenuItem.addActionListener(this);
         fileMenu.add(newMenuItem);
+        fileMenu.add(loadMenutItem);
+        fileMenu.add(saveMenuItem);
         fileMenu.add(exitMenuItem);
 
         menuBar.add(helpMenu);
@@ -193,6 +200,8 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
     private JMenu fileMenu = new JMenu("File");
     private JMenuItem exitMenuItem = new JMenuItem("Exit");
     private JMenuItem newMenuItem = new JMenuItem("New");
+    private JMenuItem loadMenutItem = new JMenuItem("Load Map");
+    private JMenuItem saveMenuItem = new JMenuItem("Save Map");
     private JMenu helpMenu = new JMenu("Help");
     private JMenuItem aboutMenuItem = new JMenuItem("About");
     private JPanel evolutionControls = new JPanel();

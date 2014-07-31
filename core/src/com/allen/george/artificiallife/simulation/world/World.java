@@ -58,21 +58,21 @@ public class World {
     }
 
 
-    public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera){
+    public void render(SpriteBatch spriteBatch, OrthographicCamera camera){
         spriteBatch.begin();
-        map.renderLayer(spriteBatch, scrollX, scrollY, camera, map.getBackgroundLayer());
-        evolver.render(spriteBatch, scrollX, scrollY, camera);
-        map.renderObjects(spriteBatch, scrollX, scrollY, camera);
-        map.renderLayer(spriteBatch, scrollX, scrollY, camera, map.getShadowLayer());
-        map.renderLayer(spriteBatch, scrollX, scrollY, camera, map.getInteractiveLayer());
-        map.renderLayer(spriteBatch, scrollX, scrollY, camera, map.getForegroundLayer());
-        // map.renderCollisionLayer(spriteBatch, scrollX, scrollY);
+        map.renderLayer(spriteBatch, camera, map.getBackgroundLayer());
+        evolver.render(spriteBatch, camera);
+        map.renderObjects(spriteBatch, camera);
+        map.renderLayer(spriteBatch, camera, map.getShadowLayer());
+        map.renderLayer(spriteBatch,  camera, map.getInteractiveLayer());
+        map.renderLayer(spriteBatch,  camera, map.getForegroundLayer());
+       // map.renderCollisionLayer(spriteBatch, camera);
 
-        weatherManager.render(spriteBatch, scrollX, scrollY, camera);
+        weatherManager.render(spriteBatch,  camera);
 
         spriteBatch.end();
 
-        dayNightCycler.render(spriteBatch, scrollX, scrollY, camera);
+        dayNightCycler.render(spriteBatch,camera);
     }
 
 

@@ -50,7 +50,7 @@ public class DayNightCycler {
         timeString = convertTime(timeString);
     }
 
-    public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera){
+    public void render(SpriteBatch spriteBatch, OrthographicCamera camera){
         Gdx.gl.glEnable(GL11.GL_BLEND);
         Gdx.gl.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 

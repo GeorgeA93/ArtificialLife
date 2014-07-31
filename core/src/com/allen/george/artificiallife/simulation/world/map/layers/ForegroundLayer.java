@@ -14,6 +14,7 @@ public class ForegroundLayer extends MapLayer {
     public ForegroundLayer(int width, int height, Map map){
         this.width = width;
         this.height = height;
+        this.name = "Foreground";
         this.map = map;
         tiles = new int[width * height];
         for(int y = 0; y < height; y ++) {
@@ -32,8 +33,8 @@ public class ForegroundLayer extends MapLayer {
     }
 
     @Override
-    public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera) {
-        int camX = (int) (scrollX * (1 / camera.zoom)) / 32;
+    public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
+       /* int camX = (int) (scrollX * (1 / camera.zoom)) / 32;
         int camY = (int) (scrollY * (1 / camera.zoom)) / 32;
         int viewPointX = (int) ((scrollX + camera.viewportWidth) / (1 / camera.zoom)) / 32;
         int viewPointY = (int) ((scrollY + camera.viewportHeight) / (1 / camera.zoom)) / 32;
@@ -49,6 +50,13 @@ public class ForegroundLayer extends MapLayer {
 
             }
 
+        }
+
+        */
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
+            }
         }
     }
 }

@@ -5,13 +5,21 @@ import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.simulation.world.map.layers.*;
 import com.allen.george.artificiallife.simulation.world.map.objects.*;
 import com.allen.george.artificiallife.simulation.world.map.objects.Object;
+import com.allen.george.artificiallife.simulation.world.map.objects.comparators.FoodComparator;
+import com.allen.george.artificiallife.simulation.world.map.objects.food.Apple;
+import com.allen.george.artificiallife.simulation.world.map.objects.food.Food;
 import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.allen.george.artificiallife.simulation.world.map.objects.Object;
 import com.badlogic.gdx.math.Vector2;
+import com.sun.deploy.util.OrderedHashSet;
+import sun.text.resources.et.CollationData_et;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -49,10 +57,10 @@ public class Map {
         foregroundLayer = new ForegroundLayer(width, height, this);
         interactiveLayer = new InteractiveLayer(width, height, this);
         generateCollisionMap();
-
     }
 
     private void generateCollisionMap(){
+
         collisionMap = new int[width][height];
         for(int y = 0; y < height; y ++){
             for(int x = 0; x < width; x ++){
@@ -76,6 +84,9 @@ public class Map {
     }
 
     public void addObject(Object o){
+        if(interactiveLayer != null){
+            generateCollisionMap();
+        }
         mapObjects.add(o);
     }
 
@@ -85,10 +96,12 @@ public class Map {
 
     public void update(){
 
-        if(random.nextInt(10) > 2){
-            int x = (1 + (int)(Math.random() * (((world.getWidth() - 1) - 1) + 1)));
+        if(random.nextInt(100) < 2){
+           int x = (1 + (int)(Math.random() * (((world.getWidth() - 1) - 1) + 1)));
            int y  = (1 + (int)(Math.random() * (((world.getHeight() - 1) - 1) + 1)));
-            addObject(new Apple(32, 32, new Vector2(x, y), world));
+            if(interactiveLayer.getTileAt(x, y) == 0){
+                addObject(new Apple(32, 32, new Vector2(x, y), world));
+            }
         }
 
         for (int i = 0; i < mapObjects.size(); i++) {
@@ -105,35 +118,39 @@ public class Map {
 
 
     public int getCollisionAt(float x, float y){
-        return collisionMap[(int)x / 32][(int)y / 32];
+        return collisionMap[(int)x ][(int)y ];
     }
 
-    public void renderAll(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera) {
-        renderLayer(spriteBatch, scrollX, scrollY, camera, backgroundLayer);
-        renderLayer(spriteBatch, scrollX, scrollY, camera, shadowLayer);
-        renderLayer(spriteBatch, scrollX, scrollY, camera, interactiveLayer);
-        renderLayer(spriteBatch, scrollX, scrollY, camera, foregroundLayer);
+    public void renderAll(SpriteBatch spriteBatch, OrthographicCamera camera) {
+        renderLayer(spriteBatch,  camera, backgroundLayer);
+        renderLayer(spriteBatch,  camera, shadowLayer);
+        renderLayer(spriteBatch,  camera, interactiveLayer);
+        renderLayer(spriteBatch,  camera, foregroundLayer);
     }
 
-    public void renderLayer(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera, MapLayer layer){
-        layer.render(spriteBatch, scrollX, scrollY, camera);
+    public void renderLayer(SpriteBatch spriteBatch,  OrthographicCamera camera, MapLayer layer){
+        layer.render(spriteBatch,  camera);
     }
 
-    public void renderObjects(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera){
+    public void renderObjects(SpriteBatch spriteBatch, OrthographicCamera camera){
         for(Object o : mapObjects){
-            o.render(spriteBatch, scrollX, scrollY, camera);
+            o.render(spriteBatch, camera);
         }
     }
 
-    public void renderCollisionLayer(SpriteBatch spriteBatch, int scrollX, int scrollY){
+    public void renderCollisionLayer(SpriteBatch spriteBatch, OrthographicCamera camera){
         for(int y = 0; y < height; y ++){
             for(int x = 0; x < width; x ++){
                  if(collisionMap[x][y] == 1){
-                     spriteBatch.draw(Content.collision,  x * TILE_SIZE - scrollX,  y * TILE_SIZE - scrollY);
+                     spriteBatch.draw(Content.collision,  x * TILE_SIZE - (int)camera.position.x,  y * TILE_SIZE - (int)camera.position.y);
                  }
             }
         }
     }
+
+
+
+
 
     public MapLayer getBackgroundLayer() {
         return backgroundLayer;
@@ -173,5 +190,20 @@ public class Map {
 
     public ArrayList<Object> getMapObjects() {
         return mapObjects;
+    }
+
+    public int[][]getCollisionMap(){
+        return collisionMap;
+    }
+
+    public ArrayList<Food> getFoodObjects(){
+        ArrayList<Food> foods = new ArrayList<Food>();
+        for(int i = 0; i < mapObjects.size(); i ++){
+            if(mapObjects.get(i) instanceof Food){
+                foods.add((Food)mapObjects.get(i));
+            }
+        }
+        Collections.sort(foods, new FoodComparator());
+        return foods;
     }
 }

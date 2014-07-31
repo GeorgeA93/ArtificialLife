@@ -29,7 +29,7 @@ public abstract class BaseParticle {
 
     public abstract void update(double timeSpeed);
 
-    public abstract void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera);
+    public abstract void render(SpriteBatch spriteBatch, OrthographicCamera camera);
 
     public void remove(){
         removed = true;

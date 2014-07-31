@@ -48,11 +48,11 @@ public class ParticleManager {
         }
     }
 
-    public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera, boolean raining){
+    public void render(SpriteBatch spriteBatch,  OrthographicCamera camera, boolean raining){
         if(!raining) return;
         for (int i = 0; i < particles.size(); i++) {
             if(raining){
-                particles.get(i).render(spriteBatch, scrollX, scrollY, camera);
+                particles.get(i).render(spriteBatch, camera);
             }
         }
     }

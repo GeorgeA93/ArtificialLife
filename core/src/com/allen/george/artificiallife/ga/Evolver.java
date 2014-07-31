@@ -16,7 +16,7 @@ public class Evolver {
     private World world;
 
     private ArrayList<LifeForm> lifeForms = new ArrayList<LifeForm>();
-    private int populationSize = 100;
+    private int populationSize = 20;
     private Random random = new Random();
 
     public Evolver(World world){
@@ -43,9 +43,9 @@ public class Evolver {
         }
     }
 
-    public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera){
+    public void render(SpriteBatch spriteBatch, OrthographicCamera camera){
         for(LifeForm lf : lifeForms){
-            lf.render(spriteBatch, scrollX, scrollY);
+            lf.render(spriteBatch,camera);
         }
     }
 

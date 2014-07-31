@@ -17,11 +17,12 @@ public abstract class MapLayer {
     public int width, height;
     public int[] tiles;
     public Map map;
+    public String name;
 
     public void addTile(int x, int y, int texId){
     }
 
-    public  int getTileAt(int x, int y){
+    public int getTileAt(int x, int y){
         return 0;
     }
 
@@ -39,6 +40,6 @@ public abstract class MapLayer {
 
     }
 
-    public abstract void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera);
+    public abstract void render(SpriteBatch spriteBatch, OrthographicCamera camera);
 
 }

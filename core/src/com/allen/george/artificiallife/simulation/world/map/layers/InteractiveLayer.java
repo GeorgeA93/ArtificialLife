@@ -3,7 +3,7 @@ package com.allen.george.artificiallife.simulation.world.map.layers;
 import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.simulation.world.map.Tile;
 import com.allen.george.artificiallife.simulation.world.map.objects.*;
-import com.allen.george.artificiallife.utils.Content;
+import com.allen.george.artificiallife.simulation.world.map.objects.food.Apple;
 import com.allen.george.artificiallife.utils.SimulationSettings;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,6 +17,7 @@ public class InteractiveLayer extends MapLayer{
     public InteractiveLayer(int width, int height, Map map){
         this.width = width;
         this.height = height;
+        this.name = "Interactive";
         this.map = map;
         tiles = new int[width * height];
         for(int y = 0; y < height; y ++) {
@@ -88,7 +89,7 @@ public class InteractiveLayer extends MapLayer{
                       }
                   }
                     if(( random.nextInt(300) > 298) && tiles[x  + y * width] == Tile.NULL_TILE.getTileID()){
-                        tiles[x + y * width] = Tile.apple_tile.getTileID();
+                        tiles[x + y * width] = Tile.NULL_TILE.getTileID();
                         map.addObject(new Apple(32, 32, new Vector2(x , y ), map.getWorld()));
                     }
                 }
@@ -265,8 +266,8 @@ public class InteractiveLayer extends MapLayer{
     }
 
 
-    public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera) {
-        int camX = (int)(scrollX * (1 / camera.zoom)) / 32;
+    public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
+     /*   int camX = (int)(scrollX * (1 / camera.zoom)) / 32;
         int camY = (int)(scrollY * (1 / camera.zoom)) / 32;
         int viewPointX = (int)((scrollX + camera.viewportWidth) / (1/ camera.zoom)) / 32;
         int viewPointY = (int)((scrollY + camera.viewportHeight) / (1/ camera.zoom)) / 32;
@@ -279,6 +280,14 @@ public class InteractiveLayer extends MapLayer{
         for (int y = minY; y < maxY; y++){
             for (int x = minX; x < maxX ; x++){
                 Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
+            }
+        }
+
+        */
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
             }
         }
 

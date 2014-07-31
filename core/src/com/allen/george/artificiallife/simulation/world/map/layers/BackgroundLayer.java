@@ -14,6 +14,7 @@ public class BackgroundLayer extends MapLayer {
     public BackgroundLayer(int width, int height, Map map){
         this.width = width;
         this.height = height;
+        this.name = "Background";
         this.map = map;
         tiles = new int[width * height];
         for(int y = 0; y < height; y ++) {
@@ -48,8 +49,8 @@ public class BackgroundLayer extends MapLayer {
 
 
     @Override
-    public void render(SpriteBatch spriteBatch, int scrollX, int scrollY, OrthographicCamera camera) {
-        int camX = (int)(scrollX * (1 / camera.zoom)) / 32;
+    public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
+       /* int camX = (int)(scrollX * (1 / camera.zoom)) / 32;
         int camY = (int)(scrollY * (1 / camera.zoom)) / 32;
         int viewPointX = (int)((scrollX + camera.viewportWidth) / (1/ camera.zoom)) / 32;
         int viewPointY = (int)((scrollY + camera.viewportHeight) / (1/ camera.zoom)) / 32;
@@ -62,6 +63,13 @@ public class BackgroundLayer extends MapLayer {
         for (int y = minY; y < maxY; y++){
             for (int x = minX; x < maxX ; x++){
                 Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
+            }
+        }
+
+        */
+        for (int y = 0; y < height; y++){
+            for (int x = 0; x < width ; x++){
+                Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
             }
         }
     }

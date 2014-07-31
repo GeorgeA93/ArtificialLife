@@ -25,7 +25,7 @@ public class Object {
 
     public void update(){};
 
-    public void render(SpriteBatch spriteBatch, int xScroll, int yScroll, OrthographicCamera camera){};
+    public void render(SpriteBatch spriteBatch,  OrthographicCamera camera){};
 
     public void remove(){
         removed = true;
