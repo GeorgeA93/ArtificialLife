@@ -1,12 +1,17 @@
 package com.allen.george.artificiallife.simulation.life;
 
 import com.allen.george.artificiallife.ga.BehaviourTree;
+import com.allen.george.artificiallife.pathfinding.AStarPathFinder;
+import com.allen.george.artificiallife.pathfinding.PathNode;
 import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.simulation.world.map.objects.food.Food;
 import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.TimeUtils;
+
+import java.util.ArrayList;
 
 /**
  * Created by George on 24/06/2014.
@@ -20,9 +25,12 @@ public class LifeForm {
     private double TIME_SPEED;
     private BehaviourTree tree;
 
-    private int smellingDistance = 10;
+    private int smellingDistance = 5;
     private int seeingDistance = 5;
     private Food targetFood;
+
+    private AStarPathFinder pathFinder;
+    private ArrayList<PathNode> pathToFood;
 
 
     //ANIMATION
@@ -41,29 +49,34 @@ public class LifeForm {
         this.positionX = (1 + (int)(Math.random() * (((world.getWidth() - 1) - 1) + 1)));
         this.positionY = (1 + (int)(Math.random() * (((world.getHeight() - 1) - 1) + 1)));
 
+        this.pathFinder = new AStarPathFinder(world.getMap());
+        this.pathToFood = null;
+
         targetFood = null;
 
         this.tree = new BehaviourTree(this);
     }
 
-    private boolean c  = false;
 
     public void move(int xa, int ya){
-        if(xa < 0) direction = RIGHT;
-        if(xa > 0) direction = LEFT;
-        if(ya < 0) direction = UP;
-        if(ya > 0) direction = DOWN;
 
+        positionX += xa;
+        positionY += ya;
+
+        /*
         if(!collision(xa, ya)){
             c = false;
             positionX += xa;
             positionY += ya;
         } else {
             c = true;
-            targetFood = null;
 
+           if(direction == RIGHT) moveUp();
+           if(direction == LEFT)  moveDown();
+           if(direction == UP)   moveLeft();
+           if(direction == DOWN)  moveRight();
         }
-
+        */
     }
 
     public void moveToFood(Food food){
@@ -85,6 +98,77 @@ public class LifeForm {
         }
    }
 
+
+
+
+
+    public void moveToFoodByPath(Food food) {
+
+
+         if(food == null) return;
+
+        int foodX = (int) food.position.x;
+        int foodY = (int) food.position.y;
+        if (pathToFood == null){
+            pathToFood = pathFinder.findPath(positionX, positionY, foodX, foodY);
+        } else {
+
+            for(int i = pathToFood.size() - 1 ; i >= 0; i --){
+
+                int nodeX = pathToFood.get(i).getX();
+                int nodeY = pathToFood.get(i).getY();
+                if (positionX < nodeX)
+                    moveRight();
+                if (positionX > nodeX)
+                    moveLeft();
+                if (positionY < nodeY)
+                    moveUp();
+                if (positionY > nodeY)
+                    moveDown();
+
+                if (positionX == foodX && positionY == foodY) {
+                    pathToFood = null;
+                    targetFood = null;
+                    break;
+                }
+            }
+
+        }
+
+        /*
+
+        if(food == null) return;
+
+        int foodX = (int)food.position.x;
+        int foodY = (int)food.position.y;
+
+        pathToFood = pathFinder.findPath(positionX, positionY, foodX, foodY);
+        if (pathToFood != null) {
+            if (pathToFood.size() > 0) {
+                int nodeX = pathToFood.get(pathToFood.size() - 1).getX();
+                int nodeY = pathToFood.get(pathToFood.size() - 1).getY();
+                if (positionX < nodeX)
+                    moveRight();
+                if (positionX > nodeX)
+                    moveLeft();
+                if (positionY < nodeY)
+                   moveUp();
+                if (positionY > nodeY)
+                   moveDown();
+            }
+
+            if (positionX == foodX && positionY == foodY) {
+                pathToFood = null;
+                targetFood = null;
+            }
+        }
+    */
+
+
+    }
+
+
+
     public boolean collision(int xa, int ya){
         boolean solid = false;
 
@@ -93,20 +177,40 @@ public class LifeForm {
         return solid;
     }
 
+    private boolean foodStillExist(Food food){
+        for (int i = 0; i < world.getMap().getMapObjects().size(); i++) {
+            // get the current food item
+            Object obj = world.getMap().getMapObjects().get(i);
+            Food f = null;
+            if (obj instanceof Food) {
+                f = (Food) obj;
+            } else {
+                continue;
+            }
+
+            if(f == food){
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     public void update(double timeSpeed){
-
         timer += 1;
         this.TIME_SPEED = timeSpeed;
        // this.tree.evaluate();
 
+
         if(targetFood == null) {
-            if(canSmellFood(smellingDistance)){
-                moveToFood(targetFood);
-            }
+            smellFood(smellingDistance);
         } else {
-            moveToFood(targetFood);
+            if(foodStillExist(targetFood)){
+                moveToFoodByPath(targetFood);
+            } else {
+                targetFood = null;
+                pathToFood = null;
+            }
         }
 
 
@@ -122,33 +226,27 @@ public class LifeForm {
     }
 
     public void moveUp(){
-      // if(position.y < world.getHeight() - 1 && world.getMap().getCollisionAt(position.x , position.y + 1) != 1){
-        positionY += MOVE_SPEED;
-            direction = UP;
-      //  }
+        direction = UP;
+        move(0, 1);
     }
 
     public void moveDown(){
-      // if(position.y > 0 && world.getMap().getCollisionAt(position.x , position.y - 1) != 1){
-        positionY -=  MOVE_SPEED;
-            direction = DOWN;
-      //  }
+        direction = DOWN;
+        move(0, -1);
     }
 
     public void moveLeft(){
-     // if(position.x > 0 && world.getMap().getCollisionAt(position.x - 1 , position.y ) != 1){
-        positionX -=  MOVE_SPEED;
-            direction = LEFT;
-      // }
+        direction = LEFT;
+        move(-1, 0);
     }
 
     public void moveRight(){
-       // if(position.x < world.getWidth() - 1 && world.getMap().getCollisionAt(position.x + 1, position.y) != 1){
-        positionX+=  MOVE_SPEED;
-            direction = RIGHT;
-      //  }
+        direction = RIGHT;
+        move(1, 0);
     }
 
+
+    //TODO: I believe that changing this method to read "mapobjects" and check "instanceof food" may be faster, needs further testing.
     public boolean canSmellFood(int radius){
 
         for (int i = 0; i < world.getMap().getFoodObjects().size(); i++) {
@@ -173,6 +271,35 @@ public class LifeForm {
         return false;
     }
 
+    public void smellFood(int radius){
+
+        for (int i = 0; i < world.getMap().getMapObjects().size(); i++) {
+            // get the current food item
+            Object obj = world.getMap().getMapObjects().get(i);
+            Food f = null;
+            if(obj instanceof Food){
+                f = (Food)obj;
+            } else {
+                continue;
+            }
+            // get the x and y coordinates of the food
+            int fx = (int)f.position.x;
+            int fy =  (int)f.position.y;
+
+            // get the x and y distance between the food and the bug
+            int dx = Math.abs(fx - positionX);
+            int dy = Math.abs(fy - positionY);
+
+            // get the total distance
+            double distance = Math.sqrt((dx * dx) + (dy * dy));
+            // int distance = dx + dy;
+            if (distance <= radius) {
+                targetFood = f;
+            }
+        }
+    }
+
+
     public boolean canSeeFood(int radius){
         return canSmellFood(radius);
     }
@@ -180,10 +307,6 @@ public class LifeForm {
 
 
     public void render(SpriteBatch spriteBatch, OrthographicCamera camera){
-        if(c){
-            spriteBatch.draw(Content.collision, positionX * Map.TILE_SIZE - (int)camera.position.x, positionY * Map.TILE_SIZE - (int)camera.position.y);
-        }
-
         spriteBatch.draw(Content.cat[frame][direction], positionX * Map.TILE_SIZE - (int)camera.position.x, positionY * Map.TILE_SIZE - (int)camera.position.y);
     }
 

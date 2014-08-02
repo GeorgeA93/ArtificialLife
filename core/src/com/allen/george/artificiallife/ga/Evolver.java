@@ -16,7 +16,7 @@ public class Evolver {
     private World world;
 
     private ArrayList<LifeForm> lifeForms = new ArrayList<LifeForm>();
-    private int populationSize = 20;
+    private int populationSize = 100;
     private Random random = new Random();
 
     public Evolver(World world){

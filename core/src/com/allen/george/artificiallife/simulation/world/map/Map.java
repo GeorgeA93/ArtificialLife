@@ -118,6 +118,11 @@ public class Map {
 
 
     public int getCollisionAt(float x, float y){
+        //if(x == world.getWidth() - 1) return 1;
+       // if(x <0) return 1;
+        //if(y == world.getHeight() - 1) return 1;
+       // if(y < 0) return 1;
+
         return collisionMap[(int)x ][(int)y ];
     }
 
