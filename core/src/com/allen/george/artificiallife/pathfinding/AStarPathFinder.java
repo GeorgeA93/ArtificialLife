@@ -1,24 +1,41 @@
 package com.allen.george.artificiallife.pathfinding;
 
+import com.allen.george.artificiallife.simulation.life.LifeForm;
 import com.allen.george.artificiallife.simulation.world.map.Map;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 
 /**
  * Created by George on 02/08/2014.
  */
-public class AStarPathFinder {
+public class AStarPathFinder implements Runnable{
 
     private ArrayList<PathNode> path = new ArrayList<PathNode>();
     private ArrayList<PathNode> openList = new ArrayList<PathNode>();
     private ArrayList<PathNode> closedList = new ArrayList<PathNode>();
     private PathNode currentNode;
-    private int maxDepth = 20;
+    private int maxDepth = 1000;
 
     private Map map;
     private int[][] gameMap;
+
+    private Thread thread;
+    private LifeForm lifeForm;
+    private int foodX, foodY;
+
+    public void start(LifeForm lifeForm, int foodX, int foodY){
+        this.lifeForm = lifeForm;
+        this.foodX = foodX;
+        this.foodY = foodY;
+        this.thread = new Thread(this, "Path Finding");
+        thread.start();
+    }
+
+    public void run(){
+       // if(lifeForm.getPathToFood() == null){
+            lifeForm.setPathToFood(findPath(lifeForm.positionX, lifeForm.positionY, foodX, foodY));
+      //  }
+    }
 
     /**
      * Compares the fCosts of two nodes
@@ -60,19 +77,28 @@ public class AStarPathFinder {
         openList.add(currentNode);
 
         index = 0;
+
         while (openList.size() > 0) {
             index ++;
             if(index == maxDepth){
-                break;
+               break;
             }
 
             // sort the open nodes by their fCost
-            Collections.sort(openList, sortNodes);
+            try {
+                Collections.sort(openList, sortNodes);
+            }catch(Exception e){
+               return null;
+            }
             currentNode = openList.get(0);
 
             if (currentNode.getX() == xe && currentNode.getY() == ye) {
                 //reconstruct the path
+
+
                 while(currentNode.getParent() != null){
+
+
                     path.add(currentNode);
                     currentNode = currentNode.getParent();
                 }
@@ -86,6 +112,7 @@ public class AStarPathFinder {
 
             // loop through the adjacent tiles
             for (int i = 0; i < 9; i++) {
+
                 // skip these tiles to avoid diagonal movement
                 if (i == 0)continue;
                 if (i == 2)continue;
@@ -139,7 +166,9 @@ public class AStarPathFinder {
      * @return true if its in the list, false if not
      */
     private boolean isNodeInList(ArrayList<PathNode> list, int x, int y){
-        for(PathNode n : list){
+        for(int i = 0; i < list.size(); i ++){
+            PathNode n = list.get(i);
+            if(n == null) continue;
             if(n.getX() == x && n.getY() == y){
                 return true;
             }

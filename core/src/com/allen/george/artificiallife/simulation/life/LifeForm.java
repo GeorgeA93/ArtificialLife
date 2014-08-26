@@ -10,6 +10,7 @@ import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.sun.org.glassfish.external.statistics.impl.TimeStatisticImpl;
 
 import java.util.ArrayList;
 
@@ -25,7 +26,7 @@ public class LifeForm {
     private double TIME_SPEED;
     private BehaviourTree tree;
 
-    private int smellingDistance = 5;
+    private int smellingDistance = 10;
     private int seeingDistance = 5;
     private Food targetFood;
 
@@ -59,90 +60,28 @@ public class LifeForm {
 
 
     public void move(int xa, int ya){
-
+        //update ourselves on the collision map
+        world.getMap().setCollisionAt(positionX, positionY, 0);
+        //then move to the destination square
         positionX += xa;
         positionY += ya;
-
-        /*
-        if(!collision(xa, ya)){
-            c = false;
-            positionX += xa;
-            positionY += ya;
-        } else {
-            c = true;
-
-           if(direction == RIGHT) moveUp();
-           if(direction == LEFT)  moveDown();
-           if(direction == UP)   moveLeft();
-           if(direction == DOWN)  moveRight();
-        }
-        */
     }
-
-    public void moveToFood(Food food){
-        int xa = 0, ya = 0;
-        if (positionX < food.position.x)
-            xa += MOVE_SPEED;
-        if (positionX > food.position.x)
-            xa-=MOVE_SPEED;
-        if (positionY < food.position.y)
-            ya +=MOVE_SPEED;
-        if (positionY > food.position.y)
-            ya -=MOVE_SPEED;
-
-        if(xa != 0 | ya != 0) move(xa, ya);
-
-        if (positionX == (int)food.position.x && positionY == (int)food.position.y) {
-            targetFood = null;
-
-        }
-   }
-
-
-
-
 
     public void moveToFoodByPath(Food food) {
 
-
-         if(food == null) return;
-
-        int foodX = (int) food.position.x;
-        int foodY = (int) food.position.y;
-        if (pathToFood == null){
-            pathToFood = pathFinder.findPath(positionX, positionY, foodX, foodY);
-        } else {
-
-            for(int i = pathToFood.size() - 1 ; i >= 0; i --){
-
-                int nodeX = pathToFood.get(i).getX();
-                int nodeY = pathToFood.get(i).getY();
-                if (positionX < nodeX)
-                    moveRight();
-                if (positionX > nodeX)
-                    moveLeft();
-                if (positionY < nodeY)
-                    moveUp();
-                if (positionY > nodeY)
-                    moveDown();
-
-                if (positionX == foodX && positionY == foodY) {
-                    pathToFood = null;
-                    targetFood = null;
-                    break;
-                }
-            }
-
-        }
-
-        /*
-
         if(food == null) return;
+
+        if(!foodStillExist(targetFood)){
+            targetFood = null;
+            pathToFood = null;
+            return;
+        }
 
         int foodX = (int)food.position.x;
         int foodY = (int)food.position.y;
 
-        pathToFood = pathFinder.findPath(positionX, positionY, foodX, foodY);
+        pathFinder.start(this, foodX, foodY); //start the thread to calculate the food path
+
         if (pathToFood != null) {
             if (pathToFood.size() > 0) {
                 int nodeX = pathToFood.get(pathToFood.size() - 1).getX();
@@ -162,12 +101,8 @@ public class LifeForm {
                 targetFood = null;
             }
         }
-    */
-
 
     }
-
-
 
     public boolean collision(int xa, int ya){
         boolean solid = false;
@@ -196,27 +131,22 @@ public class LifeForm {
     }
 
 
+    //TODO: Pretty dirt code for controlling the speed of movement. To FIX, may need to rework day/night system and timing etc
     public void update(double timeSpeed){
-        timer += 1;
-        this.TIME_SPEED = timeSpeed;
-       // this.tree.evaluate();
+        //update the time speed
+        this.TIME_SPEED = (int)((float)timeSpeed * 1000) + 1;
+        timer += TIME_SPEED;
+        //update ourselves on the collision map
+        world.getMap().setCollisionAt(positionX, positionY, 1);
 
-
-        if(targetFood == null) {
-            smellFood(smellingDistance);
-        } else {
-            if(foodStillExist(targetFood)){
-                moveToFoodByPath(targetFood);
-            } else {
-                targetFood = null;
-                pathToFood = null;
-            }
-        }
-
-
-        //Animation
-        if(timer % 60 == 0){
+        if(timer > 100){
             timer = 0;
+
+            // this.tree.evaluate();
+            smellFood(smellingDistance);
+            moveToFoodByPath(targetFood);
+
+            //animation
             if(frame != maxFrames){
                 frame ++;
             } else {
@@ -272,7 +202,9 @@ public class LifeForm {
     }
 
     public void smellFood(int radius){
-
+        if(targetFood != null){
+            return;
+        }
         for (int i = 0; i < world.getMap().getMapObjects().size(); i++) {
             // get the current food item
             Object obj = world.getMap().getMapObjects().get(i);
@@ -313,5 +245,13 @@ public class LifeForm {
 
     public void setTargetFood(Food targetFood) {
         this.targetFood = targetFood;
+    }
+
+    public ArrayList<PathNode> getPathToFood() {
+        return pathToFood;
+    }
+
+    public void setPathToFood(ArrayList<PathNode> pathToFood) {
+        this.pathToFood = pathToFood;
     }
 }

@@ -64,17 +64,23 @@ public class Map {
         collisionMap = new int[width][height];
         for(int y = 0; y < height; y ++){
             for(int x = 0; x < width; x ++){
+
+                //Not to sure if the collision generation for the edges of the map is need yet
+                //If so the one below appears to be wrong or atleast stuff can spawn on the collision
+                //tiles, therefore either one needs changing!
+
+
                 if(x == 0){
-                    collisionMap[x][y] = 1;
+                  //  collisionMap[x][y] = 1;
                 }
                 if(y == 0){
-                    collisionMap[x][y] = 1;
+                  //  collisionMap[x][y] = 1;
                 }
                 if(x == width - 1){
-                    collisionMap[x][y] = 1;
+                  //  collisionMap[x][y] = 1;
                 }
                 if(y == height - 1){
-                    collisionMap[x][y] = 1;
+                  //  collisionMap[x][y] = 1;
                 }
                 if(interactiveLayer.getTileAt(x, y) != 0){
                     collisionMap[x][y] = 1;
@@ -124,6 +130,12 @@ public class Map {
        // if(y < 0) return 1;
 
         return collisionMap[(int)x ][(int)y ];
+    }
+
+    public void setCollisionAt(float x, float y, int value){
+        if(value != 0 || value != 1) return;
+
+        collisionMap[(int)x][((int)y)] = value;
     }
 
     public void renderAll(SpriteBatch spriteBatch, OrthographicCamera camera) {

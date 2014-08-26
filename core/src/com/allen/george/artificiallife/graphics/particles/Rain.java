@@ -24,7 +24,7 @@ public class Rain extends BaseParticle {
         position = new Vector2(-40 + (int)(Math.random() * ((width - -40) + 1)), height);
         direction = 290;
         scaleX = 5;
-        scaleY = 8 + (int)(Math.random() * ((12 - 8) + 1));
+        scaleY = 20 + (int)(Math.random() * ((30 - 20) + 1));
         lifeTime = (5 + (int)(Math.random() * ((200 - 5) + 1))) * scaleX;
         speed =  1000 * (float)world.getDayNightCycler().getTimeSpeed();
         rotation = (float)-Math.toRadians(direction);

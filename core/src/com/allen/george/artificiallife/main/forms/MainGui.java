@@ -105,6 +105,18 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
      * Create the frame.
      */
     public MainGui() {
+
+        try {
+            // Set cross-platform Java L&F (also called "Metal")
+            UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName());
+        }
+        catch (Exception e) {
+            // handle exception
+        }
+
+
+
         addComponentListener(this);
 
         setTitle("Artificial Life v0.2");
