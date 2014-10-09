@@ -36,7 +36,7 @@ public abstract class MapLayer {
 
     }
 
-    public void removeWater(com.allen.george.artificiallife.simulation.world.map.objects.Object o, int xx, int yy, int w){
+    public void removeWater(MapObject o, int xx, int yy, int w){
 
     }
 

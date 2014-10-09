@@ -1,19 +1,11 @@
 package com.allen.george.artificiallife.simulation.world;
 
 import com.allen.george.artificiallife.ga.Evolver;
-import com.allen.george.artificiallife.graphics.particles.BaseParticle;
-import com.allen.george.artificiallife.graphics.particles.Rain;
-import com.allen.george.artificiallife.simulation.life.LifeForm;
 import com.allen.george.artificiallife.simulation.world.daynight.DayNightCycler;
 import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.simulation.world.weather.WeatherManager;
-import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import org.lwjgl.Sys;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by George on 23/06/2014.

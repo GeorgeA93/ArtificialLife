@@ -29,10 +29,10 @@ public class ShadowLayer extends MapLayer{
 
     @Override
     public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
-       /* int camX = (int)(scrollX * (1 / camera.zoom)) / 32;
-        int camY = (int)(scrollY * (1 / camera.zoom)) / 32;
-        int viewPointX = (int)((scrollX + camera.viewportWidth) / (1/ camera.zoom)) / 32;
-        int viewPointY = (int)((scrollY + camera.viewportHeight) / (1/ camera.zoom)) / 32;
+        int camX = (int)(camera.position.x * (1 / camera.zoom)) / 32;
+        int camY = (int)(camera.position.y * (1 / camera.zoom)) / 32;
+        int viewPointX = (int)((camera.position.x + camera.viewportWidth) / (1/ camera.zoom)) / 32;
+        int viewPointY = (int)((camera.position.y + camera.viewportHeight) / (1/ camera.zoom)) / 32;
 
         int minX = Math.max(0, camX - 1);
         int minY = Math.max(0, camY - 1);
@@ -41,17 +41,17 @@ public class ShadowLayer extends MapLayer{
 
         for (int y = minY; y < maxY; y++){
             for (int x = minX; x < maxX ; x++){
-                Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
+                Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
             }
         }
 
-        */
-
+        /*
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
             }
         }
+        */
     }
 
 }

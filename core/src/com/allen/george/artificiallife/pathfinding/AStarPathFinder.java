@@ -14,26 +14,33 @@ public class AStarPathFinder implements Runnable{
     private ArrayList<PathNode> openList = new ArrayList<PathNode>();
     private ArrayList<PathNode> closedList = new ArrayList<PathNode>();
     private PathNode currentNode;
-    private int maxDepth = 1000;
+    private int maxDepth = 10000;
 
     private Map map;
     private int[][] gameMap;
 
     private Thread thread;
     private LifeForm lifeForm;
-    private int foodX, foodY;
+    private int objectX, objectY;
 
-    public void start(LifeForm lifeForm, int foodX, int foodY){
+    public void start(LifeForm lifeForm, int objectX, int objectY){
         this.lifeForm = lifeForm;
-        this.foodX = foodX;
-        this.foodY = foodY;
+        this.objectX = objectX;
+        this.objectY = objectY;
         this.thread = new Thread(this, "Path Finding");
-        thread.start();
+        this.path = new ArrayList<PathNode>();
+        this.openList = new ArrayList<PathNode>();
+        this.closedList = new ArrayList<PathNode>();
+        this.currentNode = null;
+        this.thread.start();
     }
 
     public void run(){
        // if(lifeForm.getPathToFood() == null){
-            lifeForm.setPathToFood(findPath(lifeForm.positionX, lifeForm.positionY, foodX, foodY));
+
+                lifeForm.setPathToObject(findPath(lifeForm.positionX, lifeForm.positionY, objectX, objectY));
+
+
       //  }
     }
 
@@ -90,6 +97,7 @@ public class AStarPathFinder implements Runnable{
             }catch(Exception e){
                return null;
             }
+            if(openList.size() == 0) continue;
             currentNode = openList.get(0);
 
             if (currentNode.getX() == xe && currentNode.getY() == ye) {
@@ -121,6 +129,7 @@ public class AStarPathFinder implements Runnable{
                 // skip this tile as its the middle tile
                 if (i == 4)continue;
 
+                if(currentNode == null) continue;
                 // get the current location
                 int x = currentNode.getX();
                 int y = currentNode.getY();
@@ -138,8 +147,7 @@ public class AStarPathFinder implements Runnable{
                 }
 
 
-                // if the current char is a bush or a tree we want to skip these
-                // as they have collision
+                // if the current char is a 1 we want to skip due to collision
                 if (currentChar == 1)continue;
 
 

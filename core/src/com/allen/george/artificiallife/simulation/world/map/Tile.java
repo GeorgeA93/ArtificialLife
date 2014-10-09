@@ -35,6 +35,7 @@ public class Tile {
     public static final Tile WATER_TILE_TOP= new Tile(12, Content.waterTop);
     public static final Tile WATER_TILE_MIDDLE= new Tile(13, Content.waterMiddle);
 
+
     //ROCKS
     public static final Tile BIG_ROCK_1 = new Tile(14, Content.bigRock1);
     public static final Tile BIG_ROCK_2 = new Tile(15, Content.bigRock2);
@@ -74,6 +75,7 @@ public class Tile {
 
     //OBJECTS
     public static final Tile apple_tile = new Tile(44, null);
+    public static final Tile den_tile = new Tile(45, null);
 
     private static Tile[] tiles = {
             NULL_TILE,
@@ -121,7 +123,7 @@ public class Tile {
             tree_dead_bottom_middle,
             tree_dead_bottom_right,
             apple_tile,
-
+            den_tile,
     };
 
 
@@ -143,6 +145,7 @@ public class Tile {
     public void renderTile(SpriteBatch spriteBatch, int id, int x, int y){
         if(id == 0) return;
         if(getTexture(id) == null) return;
+
         spriteBatch.draw( getTexture(id) ,x, y);
     }
 

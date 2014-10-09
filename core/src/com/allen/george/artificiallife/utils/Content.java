@@ -62,8 +62,6 @@ public class Content {
     public static Texture particle;
 
 
-
-
     //LIFE FORMS
     public static Texture lifeForm;
     public static Texture catSheet;
@@ -72,6 +70,7 @@ public class Content {
 
     //objects
     public static Texture apple;
+    public static Texture denTile;
 
     //TEST
     public static Texture collision;
@@ -85,6 +84,7 @@ public class Content {
         nullTile = new TextureRegion();
         particle = new Texture(Gdx.files.internal("tiles/Dot.png"));
         apple = new Texture(Gdx.files.internal("apple.png"));
+        denTile = new Texture(Gdx.files.internal("tiles/den.png"));
 
         catSheet = new Texture(Gdx.files.internal("cat.png"));
         cat = split(catSheet, 32, 32);
@@ -152,6 +152,7 @@ public class Content {
         tree_dead_bottom_left = tree1deadSheetMain[0][3];
         tree_dead_bottom_middle = tree1deadSheetMain[1][3];
         tree_dead_bottom_right = tree1deadSheetMain[2][3];
+
     }
 
     private static TextureRegion[][] split(Texture texture, int width, int height){

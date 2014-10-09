@@ -4,6 +4,8 @@ import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.simulation.world.map.Tile;
 import com.allen.george.artificiallife.simulation.world.map.objects.*;
 import com.allen.george.artificiallife.simulation.world.map.objects.food.Apple;
+import com.allen.george.artificiallife.simulation.world.map.objects.resources.Tree;
+import com.allen.george.artificiallife.simulation.world.map.objects.resources.Water;
 import com.allen.george.artificiallife.utils.SimulationSettings;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -33,12 +35,13 @@ public class InteractiveLayer extends MapLayer{
         for(int y = 0; y < height; y ++){
             for(int x = 0; x < width; x ++) {
                 if (tiles[x + y * width] == Tile.NULL_TILE.getTileID()) {
-                    //water
+                    //WATER
                     if(SimulationSettings.GEN_WATER){
-                        if((random.nextInt(600) > 598) && ((x + 4) < width) && ((y + 4) < height)){
+                        if((random.nextInt(300) > 298) && ((x + 4) < width) && ((y + 4) < height)){
                             generateWater(x, y, 0);
                         }
                     }
+                    //LARGE ROCKS
                     if(SimulationSettings.GEN_LARGE_ROCKS){
                         //big rock
                         if(( random.nextInt(600) > 598) && ((x + 2) < width) && ((y + 2) < height) &&
@@ -49,6 +52,7 @@ public class InteractiveLayer extends MapLayer{
                             generateBigRock(x, y);
                         }
                     }
+                    //SMALL ROCKS
                    if(SimulationSettings.GEN_SMALL_ROCKS){
                        if(( random.nextInt(600) > 598) && ((y + 2) < height) &&
                                tiles[x + y * width] == Tile.NULL_TILE.getTileID() &&
@@ -56,6 +60,7 @@ public class InteractiveLayer extends MapLayer{
                            generateLongRock(x, y);
                        }
                    }
+                    //LIVE TREES
                   if(SimulationSettings.GEN_TREES){
                       if(( random.nextInt(30) > 28) && ((x + 2) < width) && ((y + 3) < height) &&
                               tiles[(x + 1) + y * width] == Tile.NULL_TILE.getTileID() &&
@@ -72,6 +77,7 @@ public class InteractiveLayer extends MapLayer{
                           map.addObject(new Tree(3, 4, new Vector2(x, y), map.getWorld(), false));
                       }
                   }
+                    //DEAD TREES
                   if(SimulationSettings.GEN_DEAD_TREES){
                       if(( random.nextInt(300) > 298) && ((x + 2) < width) && ((y + 3) < height) &&
                               tiles[(x + 1) + y * width] == Tile.NULL_TILE.getTileID() &&
@@ -88,6 +94,13 @@ public class InteractiveLayer extends MapLayer{
                           map.addObject(new Tree(3, 4, new Vector2(x, y), map.getWorld(), true));
                       }
                   }
+                    //DENS
+                  if((  random.nextInt(600) > 598) && map.getForegroundLayer().getTileAt(x, y) == Tile.NULL_TILE.getTileID()){
+                      tiles[x + y * width] = Tile.NULL_TILE.getTileID();
+                      map.addObject(new Den(32, 32, new Vector2(x, y), map.getWorld()));
+                  }
+
+                    //code for adding apples. needs moving.
                     if(( random.nextInt(300) > 298) && tiles[x  + y * width] == Tile.NULL_TILE.getTileID()){
                         tiles[x + y * width] = Tile.NULL_TILE.getTileID();
                         map.addObject(new Apple(32, 32, new Vector2(x , y ), map.getWorld()));
@@ -218,7 +231,7 @@ public class InteractiveLayer extends MapLayer{
         map.getForegroundLayer().addTile(xx + 2, yy + 3, Tile.tree_dead_top_right.getTileID());
     }
 
-    public void removeWater(com.allen.george.artificiallife.simulation.world.map.objects.Object o, int xx, int yy, int  w){
+    public void removeWater(MapObject o, int xx, int yy, int  w){
         map.removeObject(o);
         if(w == 4){
             tiles[xx + yy * width] = Tile.NULL_TILE.getTileID();
@@ -267,10 +280,10 @@ public class InteractiveLayer extends MapLayer{
 
 
     public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
-     /*   int camX = (int)(scrollX * (1 / camera.zoom)) / 32;
-        int camY = (int)(scrollY * (1 / camera.zoom)) / 32;
-        int viewPointX = (int)((scrollX + camera.viewportWidth) / (1/ camera.zoom)) / 32;
-        int viewPointY = (int)((scrollY + camera.viewportHeight) / (1/ camera.zoom)) / 32;
+        int camX = (int)(camera.position.x * (1 / camera.zoom)) / 32;
+        int camY = (int)(camera.position.y * (1 / camera.zoom)) / 32;
+        int viewPointX = (int)((camera.position.x + camera.viewportWidth) / (1/ camera.zoom)) / 32;
+        int viewPointY = (int)((camera.position.y + camera.viewportHeight) / (1/ camera.zoom)) / 32;
 
         int minX = Math.max(0, camX - 1);
         int minY = Math.max(0, camY - 1);
@@ -279,18 +292,9 @@ public class InteractiveLayer extends MapLayer{
 
         for (int y = minY; y < maxY; y++){
             for (int x = minX; x < maxX ; x++){
-                Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - scrollX, y * Map.TILE_SIZE - scrollY);
-            }
-        }
-
-        */
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
                 Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
             }
         }
-
     }
 
 

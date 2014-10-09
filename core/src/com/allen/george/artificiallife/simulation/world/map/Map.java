@@ -1,25 +1,15 @@
 package com.allen.george.artificiallife.simulation.world.map;
 
-import com.allen.george.artificiallife.graphics.particles.BaseParticle;
 import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.simulation.world.map.layers.*;
-import com.allen.george.artificiallife.simulation.world.map.objects.*;
-import com.allen.george.artificiallife.simulation.world.map.objects.Object;
-import com.allen.george.artificiallife.simulation.world.map.objects.comparators.FoodComparator;
+import com.allen.george.artificiallife.simulation.world.map.objects.MapObject;
 import com.allen.george.artificiallife.simulation.world.map.objects.food.Apple;
-import com.allen.george.artificiallife.simulation.world.map.objects.food.Food;
 import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.allen.george.artificiallife.simulation.world.map.objects.Object;
 import com.badlogic.gdx.math.Vector2;
-import com.sun.deploy.util.OrderedHashSet;
-import sun.text.resources.et.CollationData_et;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -40,7 +30,7 @@ public class Map {
     private int[][] collisionMap;
     private int width, height;
 
-    private ArrayList<Object> mapObjects = new ArrayList<Object>();
+    private ArrayList<MapObject> mapObjects = new ArrayList<MapObject>();
 
     public Map(World world){
         this.width = world.getWidth();
@@ -68,8 +58,6 @@ public class Map {
                 //Not to sure if the collision generation for the edges of the map is need yet
                 //If so the one below appears to be wrong or atleast stuff can spawn on the collision
                 //tiles, therefore either one needs changing!
-
-
                 if(x == 0){
                   //  collisionMap[x][y] = 1;
                 }
@@ -82,27 +70,33 @@ public class Map {
                 if(y == height - 1){
                   //  collisionMap[x][y] = 1;
                 }
-                if(interactiveLayer.getTileAt(x, y) != 0){
-                    collisionMap[x][y] = 1;
+                if(interactiveLayer.getTileAt(x, y) != 0 && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_TOP_LEFT.getTileID() && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_TOP_RIGHT.getTileID()
+                        && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_BOTTOM_LEFT.getTileID() && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_BOTTOM_RIGHT.getTileID()
+                        && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_LEFT.getTileID()
+                        && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_RIGHT.getTileID()
+                        && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_BOTTOM.getTileID()
+                        && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_TOP.getTileID()
+                        && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_MIDDLE.getTileID()){
+                   collisionMap[x][y] = 1;
                 }
             }
         }
     }
 
-    public void addObject(Object o){
+    public void addObject(MapObject o){
         if(interactiveLayer != null){
             generateCollisionMap();
         }
         mapObjects.add(o);
     }
 
-    public void removeObject(Object o){
+    public void removeObject(MapObject o){
         mapObjects.remove(o);
     }
 
     public void update(){
 
-        if(random.nextInt(100) < 2){
+        if(random.nextInt(10) < 2){
            int x = (1 + (int)(Math.random() * (((world.getWidth() - 1) - 1) + 1)));
            int y  = (1 + (int)(Math.random() * (((world.getHeight() - 1) - 1) + 1)));
             if(interactiveLayer.getTileAt(x, y) == 0){
@@ -111,7 +105,7 @@ public class Map {
         }
 
         for (int i = 0; i < mapObjects.size(); i++) {
-            Object o = mapObjects.get(i);
+            MapObject o = mapObjects.get(i);
             if (o == null)
                 break;
             if (!o.removed)
@@ -123,13 +117,16 @@ public class Map {
     }
 
 
-    public int getCollisionAt(float x, float y){
+    public int getCollisionAt(float x, float y) {
         //if(x == world.getWidth() - 1) return 1;
-       // if(x <0) return 1;
+        // if(x <0) return 1;
         //if(y == world.getHeight() - 1) return 1;
-       // if(y < 0) return 1;
-
-        return collisionMap[(int)x ][(int)y ];
+        // if(y < 0) return 1;
+        if (x >= 0 && x <= world.getWidth() - 1 && y >= 0 && y <= world.getHeight() - 1) {
+            return collisionMap[(int) x][(int) y];
+        } else {
+            return 1;
+        }
     }
 
     public void setCollisionAt(float x, float y, int value){
@@ -150,7 +147,7 @@ public class Map {
     }
 
     public void renderObjects(SpriteBatch spriteBatch, OrthographicCamera camera){
-        for(Object o : mapObjects){
+        for(MapObject o : mapObjects){
             o.render(spriteBatch, camera);
         }
     }
@@ -205,7 +202,7 @@ public class Map {
         return world;
     }
 
-    public ArrayList<Object> getMapObjects() {
+    public ArrayList<MapObject> getMapObjects() {
         return mapObjects;
     }
 
@@ -213,14 +210,4 @@ public class Map {
         return collisionMap;
     }
 
-    public ArrayList<Food> getFoodObjects(){
-        ArrayList<Food> foods = new ArrayList<Food>();
-        for(int i = 0; i < mapObjects.size(); i ++){
-            if(mapObjects.get(i) instanceof Food){
-                foods.add((Food)mapObjects.get(i));
-            }
-        }
-        Collections.sort(foods, new FoodComparator());
-        return foods;
-    }
 }
