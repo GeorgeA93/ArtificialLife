@@ -32,7 +32,7 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
         } else if (e.getActionCommand().equals("Load Map")){
             artificialLife.loadMap();
         } else if (e.getActionCommand().equals("Save Map")){
-            artificialLife.saveMap();
+          //  artificialLife.saveMap();
         } else if (e.getActionCommand().equals("Running")) {
             if (!artificialLife.isRunning()) {
                 artificialLife.setRunning(true);
@@ -99,6 +99,14 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
 
     public void setSimulationSpeed(int speed){
         this.simulationSpeed.setValue(speed);
+    }
+
+    public void setLifeFormInformation(String function, int energy, float thirst, float hunger){
+        this.lifeFormStateLabel.setText("Life Form State: " + function);
+        this.lifeFormEnergyLabel.setText("Life Form Energy: " + energy);
+        this.lifeFormThirstLabel.setText("Life Form Thirst: " + thirst);
+        this.lifeFormHungerLabel.setText("Life Form Hunger: " + hunger);
+
     }
 
     /**
@@ -178,6 +186,9 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
         timeLabel.setToolTipText("The current time");
         simulationControls.add(timeLabel);
 
+        lifeFormStateLabel.setToolTipText("The selected life forms current state");
+        simulationControls.add(lifeFormStateLabel);
+
         runningRadio.setToolTipText("Turn the simulation on/off");
         runningRadio.setSelected(false);
         runningRadio.setActionCommand("Running");
@@ -186,6 +197,9 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
 
         dayLabel.setToolTipText("The current day");
         simulationControls.add(dayLabel);
+
+        lifeFormEnergyLabel.setToolTipText("The selected life forms current energy");
+        simulationControls.add(lifeFormEnergyLabel);
 
         simulationSpeed.setBorder(new TitledBorder(null, "Simulation Speed",
                 TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -199,6 +213,11 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
 
         weatherLabel.setToolTipText("The current weather");
         simulationControls.add(weatherLabel);
+
+        lifeFormHungerLabel.setToolTipText("The selected life forms current hunger");
+        simulationControls.add(lifeFormHungerLabel);
+        lifeFormThirstLabel.setToolTipText("The selected life forms current thirst");
+        simulationControls.add(lifeFormThirstLabel);
 
         dataPanel.setBorder(new TitledBorder(null, "Data...",
                 TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -225,6 +244,10 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
     private JLabel dayLabel = new JLabel("Day:");
     private JSlider simulationSpeed = new JSlider();
     private JLabel weatherLabel = new JLabel("Weather:");
+    private JLabel lifeFormStateLabel = new JLabel("Life Form State: ");
+    private JLabel lifeFormEnergyLabel = new JLabel("Life Form Energy: ");
+    private JLabel lifeFormHungerLabel = new JLabel("Life Form Hunger: ");
+    private JLabel lifeFormThirstLabel = new JLabel("Life Form Thirst: ");
     private JPanel dataPanel = new JPanel();
     private JLabel placeHolder2 = new JLabel("placeHolder");
 

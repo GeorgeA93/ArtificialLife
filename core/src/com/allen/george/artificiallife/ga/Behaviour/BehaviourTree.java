@@ -13,35 +13,6 @@ public class BehaviourTree {
     public BehaviourTree(LifeForm lifeForm, BehaviourTreeNode rootNode){
         this.lifeForm = lifeForm;
         this.rootNode = rootNode;
-       // this.init();
-    }
-
-    public void init(){
-
-        rootNode = new BehaviourTreeNode(BehaviourTreeNodeType.CONDTION, 5); //HAS ENERGY
-
-        rootNode.setLeftChild(new BehaviourTreeNode(BehaviourTreeNodeType.CONDTION, 4)); //NEEDS TO GO TO DEN
-
-        rootNode.getLeftChild().setLeftChild(new BehaviourTreeNode(BehaviourTreeNodeType.TERMINAL, 2)); //MOVE TO DEN
-
-        rootNode.getLeftChild().setRightChild(new BehaviourTreeNode(BehaviourTreeNodeType.CONDTION, 0)); //IS HUNGRY
-
-        rootNode.getLeftChild().getRightChild().setLeftChild(new BehaviourTreeNode(BehaviourTreeNodeType.CONDTION, 2)); //CAN SMELL FOOD
-
-        rootNode.getLeftChild().getRightChild().setRightChild(new BehaviourTreeNode(BehaviourTreeNodeType.CONDTION, 1)); //IS THIRSTY
-
-        rootNode.getLeftChild().getRightChild().getLeftChild().setLeftChild(new BehaviourTreeNode(BehaviourTreeNodeType.TERMINAL, 0)); //move food
-
-        rootNode.getLeftChild().getRightChild().getLeftChild().setRightChild(new BehaviourTreeNode(BehaviourTreeNodeType.TERMINAL, 3)); //move random
-
-        rootNode.getLeftChild().getRightChild().getRightChild().setLeftChild(new BehaviourTreeNode(BehaviourTreeNodeType.CONDTION, 3)); //Can see water
-
-        rootNode.getLeftChild().getRightChild().getRightChild().setRightChild(new BehaviourTreeNode(BehaviourTreeNodeType.TERMINAL, 3)); //move random
-
-        rootNode.getLeftChild().getRightChild().getRightChild().getLeftChild().setLeftChild(new BehaviourTreeNode(BehaviourTreeNodeType.TERMINAL, 2)); //move water
-
-        rootNode.getLeftChild().getRightChild().getRightChild().getLeftChild().setRightChild(new BehaviourTreeNode(BehaviourTreeNodeType.TERMINAL, 3)); //move random
-
     }
 
     public void runRootNode(){
@@ -49,7 +20,11 @@ public class BehaviourTree {
     }
 
     private void runRootNode(BehaviourTreeNode node){
+
+
         if(node == null) return;
+
+       // System.out.println(node.getFunctionName());
 
         if(node.getBehaviourTreeNodeType() == BehaviourTreeNodeType.ACTION){
             runAsAction(node);
@@ -80,6 +55,27 @@ public class BehaviourTree {
     private void runAsSelector(BehaviourTreeNode node){
         node.getLeftChild().runFunction(lifeForm);
         node.getRightChild().runFunction(lifeForm);
+    }
+
+    public void markUnreachableNodes(){
+        markUnReachableNodes(rootNode);
+    }
+
+    private void markUnReachableNodes(BehaviourTreeNode root) {
+        if (root.getBehaviourTreeNodeType() == BehaviourTreeNodeType.TERMINAL) {
+            if (root.getLeftChild() != null)
+                root.getLeftChild().markUnReachable();
+            if (root.getRightChild() != null)
+                root.getRightChild().markUnReachable();
+        } else if (root.getBehaviourTreeNodeType() == BehaviourTreeNodeType.ACTION) {
+            if (root.getRightChild() != null)
+                root.getRightChild().markUnReachable();
+        }
+
+        if (root.getLeftChild() != null)
+            markUnReachableNodes(root.getLeftChild());
+        if (root.getRightChild() != null)
+            markUnReachableNodes(root.getRightChild());
     }
 
     public LifeForm getLifeForm() {

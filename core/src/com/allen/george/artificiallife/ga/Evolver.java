@@ -2,6 +2,8 @@ package com.allen.george.artificiallife.ga;
 
 import com.allen.george.artificiallife.simulation.life.LifeForm;
 import com.allen.george.artificiallife.simulation.world.World;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,7 +19,7 @@ public class Evolver {
     private World world;
 
     private ArrayList<LifeForm> lifeForms = new ArrayList<LifeForm>();
-    private int populationSize = 100;
+    private int populationSize = 10;
     private Random random = new Random();
 
     public Evolver(World world){

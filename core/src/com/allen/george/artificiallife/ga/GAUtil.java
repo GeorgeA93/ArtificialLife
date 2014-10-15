@@ -41,6 +41,7 @@ public class GAUtil {
         }
 
         BehaviourTree res = new BehaviourTree(lifeForm, nodes.get(0));
+        res.markUnreachableNodes();
 
         return res;
     }

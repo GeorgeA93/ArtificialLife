@@ -174,18 +174,18 @@ public class LifeForm extends ALSObject{
     }
 
     public void moveToFoodByPath() {
-        System.out.println("FOOD");
+       // System.out.println("FOOD");
         moveToObjectByPath(targetObject);
 
     }
 
     public void moveToWaterByPath(){
-        System.out.println("WATER");
+        //System.out.println("WATER");
         moveToObjectByPath(targetObject);
     }
 
     public void moveToDenByPath(){
-        System.out.println("DEN");
+       // System.out.println("DEN");
         targetObject = den; //set the target as our den
         moveToObjectByPath(targetObject);
     }
@@ -241,7 +241,7 @@ public class LifeForm extends ALSObject{
         if(timer > 100){
             timer = 0;
 
-            System.out.println("Energy: " + energy + ", hunger: " + hunger + ", thirst: " + thirst);
+          // System.out.println("Energy: " + energy + ", hunger: " + hunger + ", thirst: " + thirst);
 
             /*
             if(energy > 0){ //we have energy
@@ -300,6 +300,7 @@ public class LifeForm extends ALSObject{
             hunger += 0.1;
             thirst += 0.05;
             tree.runRootNode();
+            tree.getRootNode().mutate();
 
             //animation
             if(frame != maxFrames){
@@ -331,7 +332,7 @@ public class LifeForm extends ALSObject{
     }
 
     public void moveInRandomDirection(){
-        System.out.println("RANDOM");
+       // System.out.println("RANDOM");
         int dir = 1 + (int)(Math.random() * ((4 - 1) + 1));
         if(dir == 1){
             if(world.getMap().getCollisionAt(positionX, positionY + 1) == 1){
@@ -540,5 +541,9 @@ public class LifeForm extends ALSObject{
 
     public int getSmellingDistance() {
         return smellingDistance;
+    }
+
+    public BehaviourTree getTree(){
+        return this.tree;
     }
 }

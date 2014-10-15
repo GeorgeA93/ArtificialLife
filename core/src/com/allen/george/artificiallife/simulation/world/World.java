@@ -51,8 +51,9 @@ public class World {
 
 
     public void render(SpriteBatch spriteBatch, OrthographicCamera camera){
-        spriteBatch.begin();
+
         map.renderLayer(spriteBatch, camera, map.getBackgroundLayer());
+        spriteBatch.begin();
         evolver.render(spriteBatch, camera);
         map.renderObjects(spriteBatch, camera);
         map.renderLayer(spriteBatch, camera, map.getShadowLayer());

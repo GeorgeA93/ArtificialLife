@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import org.lwjgl.Sys;
 
+import javax.swing.border.TitledBorder;
+
 /**
  * Created by George on 23/06/2014.
  */
@@ -77,6 +79,14 @@ public class Tile {
     public static final Tile apple_tile = new Tile(44, null);
     public static final Tile den_tile = new Tile(45, null);
 
+    //SAND
+    public static final Tile sand_tile = new Tile(46, Content.sand_tile);
+    public static final Tile sand_tile_detail1 = new Tile(47, Content.sand_tile_detail_1);
+    public static final Tile sand_tile_detail2 = new Tile(48, Content.sand_tile_detail_2);
+    public static final Tile dirt_tile = new Tile(49, Content.dirt_tile);
+    public static final Tile dirt_tile_detail1 = new Tile(50, Content.dirt_tile_detail_1);
+    public static final Tile dirt_tile_detail2 = new Tile(51, Content.dirt_tile_detail_2);
+
     private static Tile[] tiles = {
             NULL_TILE,
             GRASS_TILE,
@@ -124,6 +134,12 @@ public class Tile {
             tree_dead_bottom_right,
             apple_tile,
             den_tile,
+            sand_tile,
+            sand_tile_detail1,
+            sand_tile_detail2,
+            dirt_tile,
+            dirt_tile_detail1,
+            dirt_tile_detail2,
     };
 
 

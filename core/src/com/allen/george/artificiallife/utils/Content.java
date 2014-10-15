@@ -59,6 +59,12 @@ public class Content {
     public static TextureRegion tree_dead_bottom_left;
     public static TextureRegion tree_dead_bottom_middle;
     public static TextureRegion tree_dead_bottom_right;
+    public static TextureRegion sand_tile;
+    public static TextureRegion sand_tile_detail_1;
+    public static TextureRegion sand_tile_detail_2;
+    public static TextureRegion dirt_tile;
+    public static TextureRegion dirt_tile_detail_1;
+    public static TextureRegion dirt_tile_detail_2;
     public static Texture particle;
 
 
@@ -75,6 +81,8 @@ public class Content {
     //TEST
     public static Texture collision;
     public static Texture path;
+    public static Texture alphaMask;
+
 
     public static void load(){
         loadTileSheet();
@@ -88,6 +96,7 @@ public class Content {
 
         catSheet = new Texture(Gdx.files.internal("cat.png"));
         cat = split(catSheet, 32, 32);
+        alphaMask = new Texture(Gdx.files.internal("mask.png"));
     }
 
     private static void loadTileSheet(){
@@ -109,6 +118,14 @@ public class Content {
         grassTileDeatail1 = tileSheetMain[0][11];
         grassTileDeatail2 = tileSheetMain[1][11];
         grassTileDeatail3 = tileSheetMain[2][11];
+
+        sand_tile = tileSheetMain[0][5];
+        sand_tile_detail_1 = tileSheetMain[1][5];
+        sand_tile_detail_2 = tileSheetMain[2][5];
+
+        dirt_tile  = tileSheetMain[6][5];;
+        dirt_tile_detail_1 = tileSheetMain[7][5];;
+        dirt_tile_detail_2 = tileSheetMain[8][5];;
 
         bigRock1 = tileSheetMain[24][19];
         bigRock2 = tileSheetMain[24][20];

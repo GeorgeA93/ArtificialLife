@@ -2,14 +2,26 @@ package com.allen.george.artificiallife.simulation.world.map.layers;
 
 import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.simulation.world.map.Tile;
+import com.allen.george.artificiallife.simulation.world.map.generation.ClusterOfPoints;
+import com.allen.george.artificiallife.simulation.world.map.generation.ClusterPoint;
+import com.allen.george.artificiallife.simulation.world.map.generation.KMeansCluster;
+import com.allen.george.artificiallife.utils.Content;
 import com.allen.george.artificiallife.utils.SimulationSettings;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import org.lwjgl.opengl.GL11;
+
+
+import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Created by George on 25/06/2014.
  */
 public class BackgroundLayer extends MapLayer {
+
+    private ClusterOfPoints[] clusters;
 
     public BackgroundLayer(int width, int height, Map map){
         this.width = width;
@@ -22,34 +34,146 @@ public class BackgroundLayer extends MapLayer {
                 tiles[x + y * width]= Tile.NULL_TILE.getTileID();
             }
         }
-        generateBackground();
+
+        Random random = new Random();
+        int numPoints = 5000;
+        ClusterPoint[] points = new ClusterPoint[numPoints];
+        for ( int i = 0; i < numPoints; i++ ){
+            int x = random.nextInt(100);
+            int y = random.nextInt(100);
+            points[i] = new ClusterPoint((float)x,(float)y);
+        }
+
+        clusters = KMeansCluster.cluster(points, 16);
+
+        createMapFromMeans();
+        calculateTerrainEdges();
     }
 
-    //generate the background
-    private void generateBackground(){
-        for(int y = 0; y < height; y ++) {
-            for (int x = 0; x < width; x++) {
-                if (tiles[x + y * width] == Tile.NULL_TILE.getTileID()) {
-                    //generate grassy bits
-                    if(SimulationSettings.GEN_GRASS){
-                        if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
-                            tiles[x + y * width] = Tile.GRASS_TILE_DETAIL1.getTileID();
-                        } else if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
-                            tiles[x + y * width] = Tile.GRASS_TILE_DETAIL2.getTileID();
-                        } else if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
-                            tiles[x + y * width] = Tile.GRASS_TILE_DETAIL3.getTileID();
-                        } else {
-                            tiles[x + y * width] = Tile.GRASS_TILE.getTileID();
-                        }
-                    }
+    private int[][] grassTiles;
+    private int[][] sandTiles;
+    private int[][] dirtTiles;
+
+    private int[][] terrainEdges;
+
+    private void calculateTerrainEdges(){
+        terrainEdges = new int[width][height];
+        for(int y = 0; y < height; y ++){
+            for(int x = 0; x < width; x ++){
+                if(x - 1 < 0 || x + 1 >= width  || y - 1 < 0  || y + 1 >= height) continue;
+                if(grassTiles[x][y] == 1 && grassTiles[x + 1][y] == 0){
+                    terrainEdges[x + 1][y] = 1;
+                }
+                if(grassTiles[x][y] == 1 && grassTiles[x - 1][y] == 0){
+                    terrainEdges[x - 1][y] = 1;
+                }
+                if(grassTiles[x][y] == 1 && grassTiles[x][y + 1] == 0){
+                    terrainEdges[x][y + 1] = 1;
+                }
+                if(grassTiles[x][y] == 1 && grassTiles[x][y - 1] == 0){
+                    terrainEdges[x ][y - 1] = 1;
+                }
+
+                if(sandTiles[x][y] == 1 && sandTiles[x + 1][y] == 0){
+                    terrainEdges[x + 1][y] = 1;
+                }
+                if(sandTiles[x][y] == 1 && sandTiles[x - 1][y] == 0){
+                    terrainEdges[x - 1][y] = 1;
+                }
+                if(sandTiles[x][y] == 1 && sandTiles[x][y + 1] == 0){
+                    terrainEdges[x][y + 1] = 1;
+                }
+                if(sandTiles[x][y] == 1 && sandTiles[x][y - 1] == 0){
+                    terrainEdges[x ][y - 1] = 1;
+                }
+
+                if(dirtTiles[x][y] == 1 && dirtTiles[x + 1][y] == 0){
+                    terrainEdges[x + 1][y] = 1;
+                }
+                if(dirtTiles[x][y] == 1 && dirtTiles[x - 1][y] == 0){
+                    terrainEdges[x - 1][y] = 1;
+                }
+                if(dirtTiles[x][y] == 1 && dirtTiles[x][y + 1] == 0){
+                    terrainEdges[x][y + 1] = 1;
+                }
+                if(dirtTiles[x][y] == 1 && dirtTiles[x][y - 1] == 0){
+                    terrainEdges[x ][y - 1] = 1;
                 }
             }
         }
     }
 
+    private void createMapFromMeans(){
+        grassTiles = new int[width][height];
+        sandTiles = new int[width][height];
+        dirtTiles = new int[width][height];
+        for(int y = 0; y < height; y ++) {
+            for (int x = 0; x < width; x++) {
+
+                float[] distances = new float[clusters.length];
+                int i = 0;
+                for(ClusterOfPoints cluster : clusters){
+                    distances[i++] = (y - cluster.getCentroid().y)*(y - cluster.getCentroid().y)+(x - cluster.getCentroid().x)*(x - cluster.getCentroid().x);
+                }
+
+                int terrainValue = clusters[getIndexOfMinimumCell(distances)].terrainValue;
+
+                if(terrainValue == 0){ //GRASS
+                    grassTiles[x][y] = 1;
+                    if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
+                        tiles[x + y * width] = Tile.GRASS_TILE_DETAIL1.getTileID();
+                    } else if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
+                        tiles[x + y * width] = Tile.GRASS_TILE_DETAIL2.getTileID();
+                    } else if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
+                        tiles[x + y * width] = Tile.GRASS_TILE_DETAIL3.getTileID();
+                    } else {
+                        tiles[x + y * width] = Tile.GRASS_TILE.getTileID();
+                    }
+                }
+                if(terrainValue == 1) { //SAND
+                    sandTiles[x][y] = 1;
+                    if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
+                        tiles[x + y * width] = Tile.sand_tile.getTileID();
+                    } else if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
+                        tiles[x + y * width] = Tile.sand_tile_detail2.getTileID();
+                    } else {
+                        tiles[x + y * width] = Tile.sand_tile_detail1.getTileID();
+                    }
+                }
+                if(terrainValue == 2){ //DIRT
+                    dirtTiles[x][y] = 1;
+                    if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
+                        tiles[x + y * width] = Tile.dirt_tile.getTileID();
+                    } else if((random.nextInt(20) > 18) && ((x + 1) < width) && ((y + 1) < height)){
+                        tiles[x + y * width] = Tile.dirt_tile_detail2.getTileID();
+                    } else {
+                        tiles[x + y * width] = Tile.dirt_tile_detail1.getTileID();
+                    }
+                }
+
+
+            }
+        }
+    }
+
+    private int getIndexOfMinimumCell(float[] distances) {
+        float minVal = Float.MAX_VALUE;
+        int index = 0;
+
+        for (int i = 0; i < distances.length; i++) {
+            if (distances[i] < minVal) {
+                minVal = distances[i];
+                index = i;
+            }
+        }
+
+        return index;
+    }
+
 
     @Override
     public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
+
         int camX = (int)(camera.position.x * (1 / camera.zoom)) / 32;
         int camY = (int)(camera.position.y * (1 / camera.zoom)) / 32;
         int viewPointX = (int)((camera.position.x + camera.viewportWidth) / (1/ camera.zoom)) / 32;
@@ -59,19 +183,20 @@ public class BackgroundLayer extends MapLayer {
         int minY = Math.max(0, camY - 1);
         int maxX = Math.min(viewPointX + 1, width);
         int maxY = Math.min(viewPointY + 1, height);
-
+        spriteBatch.begin();
         for (int y = minY; y < maxY; y++){
             for (int x = minX; x < maxX ; x++){
-                Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
-            }
-        }
 
-        /*
-        for (int y = 0; y < height; y++){
-            for (int x = 0; x < width ; x++){
                 Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
+
+                if(terrainEdges[x][y] == 1){
+                    spriteBatch.draw(Content.path, x * Map.TILE_SIZE  - (int)camera.position.x, y * Map.TILE_SIZE  - (int)camera.position.y);
+                   // Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
+                }
+
             }
         }
-        */
+        spriteBatch.end();
     }
+
 }

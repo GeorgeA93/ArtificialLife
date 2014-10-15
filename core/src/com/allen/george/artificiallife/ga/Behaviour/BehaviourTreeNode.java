@@ -3,6 +3,8 @@ package com.allen.george.artificiallife.ga.Behaviour;
 import com.allen.george.artificiallife.ga.Gene;
 import com.allen.george.artificiallife.simulation.life.LifeForm;
 
+import java.util.Random;
+
 /**
  * Created by George on 07/10/2014.
  */
@@ -19,6 +21,8 @@ public class BehaviourTreeNode {
     private int function;
 
     private BehaviourTreeNodeType behaviourTreeNodeType;
+
+    private boolean isReachable = true;
 
     public BehaviourTreeNode(BehaviourTreeNodeType behaviourTreeNodeType, int function){
         this.behaviourTreeNodeType = behaviourTreeNodeType;
@@ -68,13 +72,50 @@ public class BehaviourTreeNode {
         return true;
     }
 
+    public void mutate(){
+        Random random = new Random();
+        int r = random.nextInt(3);
+        if (r == 0) {
+            behaviourTreeNodeType = BehaviourTreeNodeType.CONDTION;
+            function = random.nextInt(NUM_CONDITIONS);
+        } else if (r == 1) {
+          //  behaviourTreeNodeType = BehaviourTreeNodeType.ACTION;
+            //function = random.nextInt(NUM_ACTIONS);
+        } else if (r == 2) {
+            behaviourTreeNodeType = BehaviourTreeNodeType.TERMINAL;
+            function = random.nextInt(NUM_TERMINALS);
+        }
+
+        if (leftChild != null)
+            if (leftChild.isReachable || random.nextInt(2) == 1)
+                leftChild.mutate();
+
+        if (rightChild != null)
+            if (rightChild.isReachable || random.nextInt(2) == 1)
+                rightChild.mutate();
+    }
+
+    public void markUnReachable(){
+        isReachable = false;
+        if(leftChild != null){
+            leftChild.markUnReachable();
+        }
+        if(rightChild != null){
+            rightChild.markUnReachable();
+        }
+    }
+
+    public boolean isReachable(){
+        return this.isReachable;
+    }
+
     public BehaviourTreeNode getLeftChild() {
         return leftChild;
     }
 
     public void setLeftChild(BehaviourTreeNode leftChild) {
         this.leftChild = leftChild;
-       // leftChild.parent = this;
+       //leftChild.parent = this;
     }
 
     public BehaviourTreeNode getRightChild() {
@@ -83,7 +124,7 @@ public class BehaviourTreeNode {
 
     public void setRightChild(BehaviourTreeNode rightChild) {
         this.rightChild = rightChild;
-       // rightChild.parent = this;
+        //rightChild.parent = this;
     }
 
     public BehaviourTreeNode getParent() {
@@ -111,6 +152,8 @@ public class BehaviourTreeNode {
     }
 
     public String getFunctionName() {
+
+        if(!isReachable) return "NOT REACHABLE";
 
         if (behaviourTreeNodeType == BehaviourTreeNodeType.CONDTION) {
             if (function == 0)
