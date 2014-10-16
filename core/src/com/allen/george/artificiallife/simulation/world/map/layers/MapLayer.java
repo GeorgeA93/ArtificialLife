@@ -4,6 +4,7 @@ import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.simulation.world.map.objects.*;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteCache;
 
 import java.util.Random;
 
@@ -39,6 +40,7 @@ public abstract class MapLayer {
     public void removeWater(MapObject o, int xx, int yy, int w){
 
     }
+
 
     public abstract void render(SpriteBatch spriteBatch, OrthographicCamera camera);
 

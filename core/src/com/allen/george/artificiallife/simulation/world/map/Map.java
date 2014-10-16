@@ -7,6 +7,7 @@ import com.allen.george.artificiallife.simulation.world.map.objects.food.Apple;
 import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -147,8 +148,8 @@ public class Map {
     }
 
     public void renderObjects(SpriteBatch spriteBatch, OrthographicCamera camera){
-        for(MapObject o : mapObjects){
-            o.render(spriteBatch, camera);
+        for(int i = 0; i < mapObjects.size(); i ++){
+            mapObjects.get(i).render(spriteBatch, camera);
         }
     }
 

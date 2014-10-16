@@ -3,10 +3,12 @@ package com.allen.george.artificiallife.simulation.world.map;
 import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import org.lwjgl.Sys;
 
 import javax.swing.border.TitledBorder;
+import java.nio.BufferOverflowException;
 
 /**
  * Created by George on 23/06/2014.
@@ -87,6 +89,16 @@ public class Tile {
     public static final Tile dirt_tile_detail1 = new Tile(50, Content.dirt_tile_detail_1);
     public static final Tile dirt_tile_detail2 = new Tile(51, Content.dirt_tile_detail_2);
 
+    //TERRAIN EDGES
+    public static final Tile grass_left = new Tile(52, Content.grass_left);
+    public static final Tile grass_right = new Tile(53, Content.grass_right);
+    public static final Tile grass_top = new Tile(54, Content.grass_top);
+    public static final Tile grass_bottom = new Tile(55, Content.grass_bottom);
+    public static final Tile grass_top_left = new Tile(56, Content.grass_top_left);
+    public static final Tile grass_top_right = new Tile(57, Content.grass_top_right);
+    public static final Tile grass_bottom_left = new Tile(58, Content.grass_bottom_left);
+    public static final Tile grass_bottom_right = new Tile(59, Content.grass_bottom_right);
+
     private static Tile[] tiles = {
             NULL_TILE,
             GRASS_TILE,
@@ -140,6 +152,14 @@ public class Tile {
             dirt_tile,
             dirt_tile_detail1,
             dirt_tile_detail2,
+            grass_left,
+            grass_right,
+            grass_top,
+            grass_bottom,
+            grass_top_left,
+            grass_top_right,
+            grass_bottom_left,
+            grass_bottom_right,
     };
 
 

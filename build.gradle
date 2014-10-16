@@ -14,7 +14,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'ArtificialLife'
-        gdxVersion = '1.1.0'
+        gdxVersion = '1.4.1'
         roboVMVersion = '0.0.13'
     }
 

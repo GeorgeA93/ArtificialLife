@@ -16,6 +16,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteCache;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ public class ArtificialLife extends ApplicationAdapter implements ApplicationLis
 
     //Graphics
 	private SpriteBatch spriteBatch;
+    public int tileMap;
     private World world;
     private MainGui gui;
 
@@ -36,6 +40,7 @@ public class ArtificialLife extends ApplicationAdapter implements ApplicationLis
     private boolean following = false;
 
     private boolean running;
+    private boolean renderedBackground = false;
 
 
     public ArtificialLife(MainGui gui){
@@ -47,6 +52,7 @@ public class ArtificialLife extends ApplicationAdapter implements ApplicationLis
 	
 	@Override
 	public void create () {
+
         Content.load();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         camera.translate(Gdx.graphics.getWidth() / 2,Gdx.graphics.getHeight() / 2);
@@ -56,15 +62,17 @@ public class ArtificialLife extends ApplicationAdapter implements ApplicationLis
 
 
 		spriteBatch = new SpriteBatch();
-        world = new World(SimulationSettings.WORLD_WIDTH,SimulationSettings.WORLD_HEIGHT);
-
+        world = new World(SimulationSettings.WORLD_WIDTH,SimulationSettings.WORLD_HEIGHT, this);
 	}
+
 
 	@Override
 	public void render () {
         //clear the screen
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+
 
 
         if(running && world.getDayNightCycler().getCycles() < world.getDayNightCycler().getMaxCycles()){
@@ -75,10 +83,17 @@ public class ArtificialLife extends ApplicationAdapter implements ApplicationLis
             }
         }
 
+        if(!renderedBackground){
+            spriteBatch.setProjectionMatrix(camera.combined);
+            spriteBatch.begin();
+            world.getMap().renderLayer(spriteBatch, camera, world.getMap().getBackgroundLayer());
+            spriteBatch.end();
+            renderedBackground = true;
+        }
 
-        //render
-        spriteBatch.setProjectionMatrix(camera.combined);
-        world.render(spriteBatch, camera);
+
+       spriteBatch.setProjectionMatrix(camera.combined);
+       world.render(spriteBatch, camera);
 
 	}
 
