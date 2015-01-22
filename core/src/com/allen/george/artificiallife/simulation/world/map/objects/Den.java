@@ -20,12 +20,29 @@ public class Den extends MapObject {
     @Override
     public void update() {
         //check to see if a life form is over the apple
-        for(int i = 0; i < world.getEvolver().getLifeForms().size(); i ++){
-            int lx = world.getEvolver().getLifeForms().get(i).positionX;
-            int ly = world.getEvolver().getLifeForms().get(i).positionY;
+        if(world == null){
+            System.out.println("WORLD NULL");
+        }
+
+        if(world.getGeneticEngine() == null){
+            System.out.println("GENETIC EWNGINE NULL");
+        }
+        if(world.getGeneticEngine().getPhenotypes() == null){
+            System.out.println("LIFEFORMS NULL");
+        }
+
+
+        for(int i = 0; i < world.getGeneticEngine().getPhenotypes().size(); i ++){
+            LifeForm lifeForm = world.getGeneticEngine().getPhenotypes().get(i);
+            int lx = world.getGeneticEngine().getPhenotypes().get(i).positionX;
+            int ly = world.getGeneticEngine().getPhenotypes().get(i).positionY;
+
+            if(lifeForm.getTargetObject() == null){
+                continue;
+            }
 
             if(lx == this.positionX && ly == this.positionY){
-                this.apply((world.getEvolver().getLifeForms().get(i)));
+                this.apply((world.getGeneticEngine().getPhenotypes().get(i)));
             }
         }
     }
@@ -35,11 +52,14 @@ public class Den extends MapObject {
         spriteBatch.draw(Content.denTile, positionX * Map.TILE_SIZE - (int)camera.position.x, positionY * Map.TILE_SIZE - (int)camera.position.y);
     }
 
-    private void apply(LifeForm lifeForm){
+    public void apply(LifeForm lifeForm){
+        lifeForm.SLEEPS_TAKEN += 10;
+
         lifeForm.setTargetObject(null);
         lifeForm.setEnergy(lifeForm.getMaxEnergy());
         lifeForm.setThirst(6f);
         lifeForm.setHunger(4f);
+        lifeForm.moveInRandomDirection(true);
     }
 
 

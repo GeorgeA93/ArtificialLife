@@ -36,11 +36,9 @@ public class DayNightCycler {
         this.world = world;
         this.width = world.getWidth();
         this.height = world.getHeight();
-        this.shapeRenderer = new ShapeRenderer();
     }
 
     public void update(){
-
         if(time >= 0.8) timeSpeed = timeSpeed * -1;
         if(time <= 0){
             timeSpeed =  timeSpeed * -1;
@@ -51,6 +49,8 @@ public class DayNightCycler {
     }
 
     public void render(SpriteBatch spriteBatch, OrthographicCamera camera){
+        if(shapeRenderer == null) shapeRenderer = new ShapeRenderer();
+
         Gdx.gl.glEnable(GL11.GL_BLEND);
         Gdx.gl.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 

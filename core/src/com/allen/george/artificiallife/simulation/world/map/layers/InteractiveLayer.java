@@ -16,6 +16,20 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class InteractiveLayer extends MapLayer{
 
+    public InteractiveLayer(int width, int height){
+        this.width = width;
+        this.height = height;
+        this.name = "Interactive";
+        tiles = new int[width * height];
+        for(int y = 0; y < height; y ++) {
+            for (int x = 0; x < width; x++) {
+                tiles[x + y * width]= Tile.NULL_TILE.getTileID();
+            }
+        }
+    }
+
+
+
     public InteractiveLayer(int width, int height, Map map){
         this.width = width;
         this.height = height;
@@ -31,13 +45,14 @@ public class InteractiveLayer extends MapLayer{
     }
 
 
+
     private void generate(){
         for(int y = 0; y < height; y ++){
             for(int x = 0; x < width; x ++) {
                 if (tiles[x + y * width] == Tile.NULL_TILE.getTileID()) {
                     //WATER
                     if(SimulationSettings.GEN_WATER){
-                        if((random.nextInt(300) > 298) && ((x + 4) < width) && ((y + 4) < height)){
+                        if((random.nextInt(200) > 198) && ((x + 4) < width) && ((y + 4) < height)){
                             generateWater(x, y, 0);
                         }
                     }
@@ -95,14 +110,14 @@ public class InteractiveLayer extends MapLayer{
                       }
                   }
                     //DENS
-                  if((  random.nextInt(600) > 598) && map.getForegroundLayer().getTileAt(x, y) == Tile.NULL_TILE.getTileID()){
-                      tiles[x + y * width] = Tile.NULL_TILE.getTileID();
+                  if((  random.nextInt(300) > 298) && map.getForegroundLayer().getTileAt(x, y) == Tile.NULL_TILE.getTileID()){
+                      tiles[x + y * width] = Tile.den_tile.getTileID();
                       map.addObject(new Den(32, 32, new Vector2(x, y), map.getWorld()));
                   }
 
                     //code for adding apples. needs moving.
                     if(( random.nextInt(300) > 298) && tiles[x  + y * width] == Tile.NULL_TILE.getTileID()){
-                        tiles[x + y * width] = Tile.NULL_TILE.getTileID();
+                        tiles[x + y * width] = Tile.apple_tile.getTileID();
                         map.addObject(new Apple(32, 32, new Vector2(x , y ), map.getWorld()));
                     }
                 }
@@ -232,7 +247,7 @@ public class InteractiveLayer extends MapLayer{
     }
 
     public void removeWater(MapObject o, int xx, int yy, int  w){
-        map.removeObject(o);
+
         if(w == 4){
             tiles[xx + yy * width] = Tile.NULL_TILE.getTileID();
             tiles[(xx + 1) + yy * width] = Tile.NULL_TILE.getTileID();
@@ -250,7 +265,7 @@ public class InteractiveLayer extends MapLayer{
             tiles[(xx + 3) + (yy + 1) * width] = Tile.NULL_TILE.getTileID();
             tiles[(xx + 3) + (yy + 2) * width] = Tile.NULL_TILE.getTileID();
             tiles[(xx + 3) + (yy + 3) * width] = Tile.NULL_TILE.getTileID();
-            generateWater(xx, yy, 3);
+           // generateWater(xx, yy, 3);
         } else if(w == 3){
             tiles[xx + yy * width] = Tile.NULL_TILE.getTileID();
             tiles[(xx + 1) + yy * width] = Tile.NULL_TILE.getTileID();
@@ -261,7 +276,7 @@ public class InteractiveLayer extends MapLayer{
             tiles[(xx + 1) + (yy + 2) * width] = Tile.NULL_TILE.getTileID();
             tiles[(xx + 2) + (yy + 1) * width] = Tile.NULL_TILE.getTileID();
             tiles[(xx + 2) + (yy + 2) * width] = Tile.NULL_TILE.getTileID();
-            generateWater(xx, yy, 2);
+           // generateWater(xx, yy, 2);
         } else if(w == 2){
             tiles[xx + yy * width] = Tile.NULL_TILE.getTileID();
             tiles[(xx + 1) + yy * width] = Tile.NULL_TILE.getTileID();
@@ -275,6 +290,9 @@ public class InteractiveLayer extends MapLayer{
     }
 
     public int getTileAt(int x, int y){
+        if((x < 0 || y < 0)){
+            return 1;
+        }
         return  tiles[x + y * width];
     }
 

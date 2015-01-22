@@ -14,19 +14,20 @@ public class AStarPathFinder implements Runnable{
     private ArrayList<PathNode> openList = new ArrayList<PathNode>();
     private ArrayList<PathNode> closedList = new ArrayList<PathNode>();
     private PathNode currentNode;
-    private int maxDepth = 10000;
+    private int maxDepth = 5000;
 
     private Map map;
-    private int[][] gameMap;
 
     private Thread thread;
     private LifeForm lifeForm;
     private int objectX, objectY;
 
-    public void start(LifeForm lifeForm, int objectX, int objectY){
+    public void start(Map map, LifeForm lifeForm, int objectX, int objectY){
+        this.map = map;
         this.lifeForm = lifeForm;
         this.objectX = objectX;
         this.objectY = objectY;
+        this.thread = null;
         this.thread = new Thread(this, "Path Finding");
         this.path = new ArrayList<PathNode>();
         this.openList = new ArrayList<PathNode>();
@@ -66,8 +67,18 @@ public class AStarPathFinder implements Runnable{
      */
     public AStarPathFinder(Map map) {
         this.map = map;
-        this.gameMap = map.getCollisionMap();
     }
+
+    public void cleanUp(){
+
+        this.map = null;
+        this.thread = null;
+        this.path = null;
+        this.openList = null;
+        this.closedList = null;
+        this.currentNode = null;
+    }
+
 
     /**
      * Finds the path between to points
@@ -80,89 +91,96 @@ public class AStarPathFinder implements Runnable{
      */
     int index = 0;
     public ArrayList<PathNode> findPath(int xs, int ys, int xe, int ye) {
-        currentNode = new PathNode(xs, ys, null, 0, getDistance(xs,ys, xe, ye));
-        openList.add(currentNode);
+        try{
+            currentNode = new PathNode(xs, ys, null, 0, getDistance(xs,ys, xe, ye));
+            openList.add(currentNode);
 
-        index = 0;
+            index = 0;
 
-        while (openList.size() > 0) {
-            index ++;
-            if(index == maxDepth){
-               break;
-            }
-
-            // sort the open nodes by their fCost
-            try {
-                Collections.sort(openList, sortNodes);
-            }catch(Exception e){
-               return null;
-            }
-            if(openList.size() == 0) continue;
-            currentNode = openList.get(0);
-
-            if (currentNode.getX() == xe && currentNode.getY() == ye) {
-                //reconstruct the path
-
-
-                while(currentNode.getParent() != null){
-
-
-                    path.add(currentNode);
-                    currentNode = currentNode.getParent();
-                }
-                openList.clear();
-                closedList.clear();
-                return path;
-            }
-
-            openList.remove(currentNode);
-            closedList.add(currentNode);
-
-            // loop through the adjacent tiles
-            for (int i = 0; i < 9; i++) {
-
-                // skip these tiles to avoid diagonal movement
-                if (i == 0)continue;
-                if (i == 2)continue;
-                if (i == 6)continue;
-                if (i == 8)continue;
-                // skip this tile as its the middle tile
-                if (i == 4)continue;
-
-                if(currentNode == null) continue;
-                // get the current location
-                int x = currentNode.getX();
-                int y = currentNode.getY();
-
-                // get the adjacency we want to check
-                int xd = (i % 3) - 1;
-                int yd = (i / 3) - 1;
-
-                int currentChar = 0;
-
-                if(x + xd >= 0 && x + xd <= map.getWorld().getWidth() - 1 && y + yd >= 0 && y + yd <= map.getWorld().getHeight() - 1){
-                    currentChar = map.getCollisionAt(x + xd,y + yd);
-                } else {
-                    continue;
+            while (openList.size() > 0) {
+                index ++;
+                if(index == maxDepth){
+                    break;
                 }
 
+                // sort the open nodes by their fCost
+                try {
+                    Collections.sort(openList, sortNodes);
+                }catch(Exception e){
+                    openList = null;
+                    closedList = null;
+                    return null;
+                }
+                if(openList.size() == 0) continue;
+                currentNode = openList.get(0);
 
-                // if the current char is a 1 we want to skip due to collision
-                if (currentChar == 1)continue;
+                if (currentNode.getX() == xe && currentNode.getY() == ye) {
+                    //reconstruct the path
 
 
-                //calculate the gCost and hCost of the adjacent tile
-                double gCost = currentNode.getGCost() + getDistance(currentNode.getX(), currentNode.getY(), x +xd, y + yd);
-                double hCost = getDistance(x + xd, y + yd, xe, ye);
+                    while(currentNode != null && currentNode.getParent() != null){
 
-                //create the new node
-                PathNode node = new PathNode(x + xd, y + yd, currentNode, gCost, hCost);
+                        path.add(currentNode);
+                        currentNode = currentNode.getParent();
+                    }
+                    openList = null;
+                    closedList = null;
+                    return path;
+                }
 
-                if(isNodeInList(closedList, x + xd, y + yd) && gCost >= node.getGCost()) continue;
-                if(!isNodeInList(openList, x + xd, y + yd) || gCost < node.getGCost()) openList.add(node);
+                openList.remove(currentNode);
+                closedList.add(currentNode);
+
+                // loop through the adjacent tiles
+                for (int i = 0; i < 9; i++) {
+
+                    // skip these tiles to avoid diagonal movement
+                    if (i == 0)continue;
+                    if (i == 2)continue;
+                    if (i == 6)continue;
+                    if (i == 8)continue;
+                    // skip this tile as its the middle tile
+                    if (i == 4)continue;
+
+                    if(currentNode == null) continue;
+                    // get the current location
+                    int x = currentNode.getX();
+                    int y = currentNode.getY();
+
+                    // get the adjacency we want to check
+                    int xd = (i % 3) - 1;
+                    int yd = (i / 3) - 1;
+
+                    int currentChar = 0;
+
+                    if(x + xd >= 0 && x + xd <= map.getWorld().getWidth() - 1 && y + yd >= 0 && y + yd <= map.getWorld().getHeight() - 1){
+                        currentChar = map.getCollisionAt(x + xd,y + yd);
+                    } else {
+                        continue;
+                    }
+
+
+                    // if the current char is a 1 we want to skip due to collision
+                    if (currentChar == 1)continue;
+
+
+                    //calculate the gCost and hCost of the adjacent tile
+                    double gCost = currentNode.getGCost() + getDistance(currentNode.getX(), currentNode.getY(), x +xd, y + yd);
+                    double hCost = getDistance(x + xd, y + yd, xe, ye);
+
+                    //create the new node
+                    PathNode node = new PathNode(x + xd, y + yd, currentNode, gCost, hCost);
+
+                    if(isNodeInList(closedList, x + xd, y + yd)) continue;
+                    if(!isNodeInList(openList, x + xd, y + yd) || gCost < node.getGCost()) openList.add(node);
+                }
             }
+            closedList = null;
+            return null;
+        } catch (Exception e){
+
         }
-        closedList.clear();
+        closedList = null;
         return null;
     }
 

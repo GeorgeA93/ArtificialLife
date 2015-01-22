@@ -11,6 +11,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  */
 public class ForegroundLayer extends MapLayer {
 
+    public ForegroundLayer(int width, int height){
+        this.width = width;
+        this.height = height;
+        this.name = "Foreground";
+        tiles = new int[width * height];
+        for(int y = 0; y < height; y ++) {
+            for (int x = 0; x < width; x++) {
+                tiles[x + y * width]= Tile.NULL_TILE.getTileID();
+            }
+        }
+    }
+
     public ForegroundLayer(int width, int height, Map map){
         this.width = width;
         this.height = height;

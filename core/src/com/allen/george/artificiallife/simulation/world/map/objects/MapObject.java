@@ -1,5 +1,6 @@
 package com.allen.george.artificiallife.simulation.world.map.objects;
 
+import com.allen.george.artificiallife.simulation.life.LifeForm;
 import com.allen.george.artificiallife.simulation.world.World;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

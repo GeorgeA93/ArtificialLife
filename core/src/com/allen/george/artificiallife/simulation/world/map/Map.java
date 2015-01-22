@@ -4,7 +4,11 @@ import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.simulation.world.map.layers.*;
 import com.allen.george.artificiallife.simulation.world.map.objects.MapObject;
 import com.allen.george.artificiallife.simulation.world.map.objects.food.Apple;
+import com.allen.george.artificiallife.simulation.world.map.objects.food.Food;
+import com.allen.george.artificiallife.simulation.world.map.objects.resources.Tree;
+import com.allen.george.artificiallife.simulation.world.map.objects.resources.Water;
 import com.allen.george.artificiallife.utils.Content;
+import com.allen.george.artificiallife.utils.SimulationSettings;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Frustum;
@@ -32,6 +36,19 @@ public class Map {
     private int width, height;
 
     private ArrayList<MapObject> mapObjects = new ArrayList<MapObject>();
+    private int currentFoodOnMap = 0;
+    private int currentWaterOnMap = 0;
+
+
+    public Map(BackgroundLayer backgroundLayer, ForegroundLayer foregroundLayer, InteractiveLayer interactiveLayer, ShadowLayer shadowLayer, int width, int height){
+        this.backgroundLayer =  backgroundLayer;
+        this.foregroundLayer = foregroundLayer;
+        this.interactiveLayer = interactiveLayer;
+        this.shadowLayer = shadowLayer;
+        this.width = width;
+        this.height = height;
+
+    }
 
     public Map(World world){
         this.width = world.getWidth();
@@ -77,7 +94,9 @@ public class Map {
                         && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_RIGHT.getTileID()
                         && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_BOTTOM.getTileID()
                         && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_TOP.getTileID()
-                        && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_MIDDLE.getTileID()){
+                        && interactiveLayer.getTileAt(x, y) != Tile.WATER_TILE_MIDDLE.getTileID()
+                        && interactiveLayer.getTileAt(x, y) != Tile.den_tile.getTileID()
+                        && interactiveLayer.getTileAt(x, y) != Tile.apple_tile.getTileID()){
                    collisionMap[x][y] = 1;
                 }
             }
@@ -91,30 +110,105 @@ public class Map {
         mapObjects.add(o);
     }
 
-    public void removeObject(MapObject o){
-        mapObjects.remove(o);
-    }
+    private double TIME_SPEED;
+    private int timer;
 
-    public void update(){
-
-        if(random.nextInt(10) < 2){
-           int x = (1 + (int)(Math.random() * (((world.getWidth() - 1) - 1) + 1)));
-           int y  = (1 + (int)(Math.random() * (((world.getHeight() - 1) - 1) + 1)));
-            if(interactiveLayer.getTileAt(x, y) == 0){
-                addObject(new Apple(32, 32, new Vector2(x, y), world));
-            }
-        }
-
+    private void getFoodAndWaterOnMapCount(){
+        this.currentFoodOnMap = 0;
+        this.currentWaterOnMap = 0;
         for (int i = 0; i < mapObjects.size(); i++) {
             MapObject o = mapObjects.get(i);
-            if (o == null)
-                break;
-            if (!o.removed)
-                o.update();
-            if (o.removed) {
-                mapObjects.remove(i--);
+            if(o instanceof Water){
+                this.currentWaterOnMap += 1;
+            }else if(o instanceof Food){
+                this.currentFoodOnMap += 1;
             }
         }
+    }
+
+    public void update(double timeSpeed){
+
+        //update the time speed
+        this.TIME_SPEED = (int)((float)timeSpeed * 1000) + 1;
+        timer += TIME_SPEED;
+
+       // if(timer % 100 == 0){
+            timer = 0;
+
+            for (int i = 0; i < mapObjects.size(); i++) {
+                MapObject o = mapObjects.get(i);
+                if (o == null)
+                    break;
+                if (!o.removed)
+                    o.update();
+                if (o.removed) {
+                    mapObjects.remove(i--);
+                }
+            }
+
+            this.getFoodAndWaterOnMapCount();
+
+            if(this.currentFoodOnMap < SimulationSettings.MINIMUM_FOOD_ON_MAP){
+                //find the number of food to generate
+                int lowerBound = SimulationSettings.MINIMUM_FOOD_ON_MAP - this.currentFoodOnMap;
+                int upperBound = SimulationSettings.MAXIMUM_FOOD_ON_MAP - this.currentFoodOnMap;
+                int numFoodToGenerate = lowerBound + (int)(Math.random() * ((upperBound - lowerBound) + 1));
+
+                for(int i = 0; i < numFoodToGenerate; i ++){
+                    int foodX = 1 + (int)(Math.random() * (((width - 1) - 1) + 1));
+                    int foodY = 1 + (int)(Math.random() * (((height - 1) - 1) + 1));
+                    if(interactiveLayer.getTileAt(foodX, foodY) == 0){
+                        addObject(new Apple(32, 32, new Vector2(foodX, foodY), world));
+                        interactiveLayer.addTile(foodX, foodY, Tile.apple_tile.getTileID());
+                    }
+                }
+            }
+
+            if(this.currentWaterOnMap < SimulationSettings.MINIMUM_WATER_ON_MAP){
+                //find the number of food to generate
+                int lowerBound = SimulationSettings.MINIMUM_WATER_ON_MAP - this.currentWaterOnMap;
+                int upperBound = SimulationSettings.MAXIMUM_WATER_ON_MAP - this.currentWaterOnMap;
+                int numWaterToGenerate = lowerBound + (int)(Math.random() * ((upperBound - lowerBound) + 1));
+
+                for(int i = 0; i < numWaterToGenerate; i ++){
+                    int waterX = 5 + (int)(Math.random() * (((width - 5) - 5) + 1));;
+                    int waterY = 5 + (int)(Math.random() * (((height - 5) - 5) + 1));;
+                    interactiveLayer.generateWater(waterX, waterY, 0);
+                }
+            }
+
+            /*
+            timer = 0;
+            int x = 0;
+            int y = 0;
+            for (int i = 0; i < mapObjects.size(); i++) {
+                MapObject o = mapObjects.get(i);
+                if(o instanceof Tree){
+                    if(random.nextInt(10) > 8){
+                        int dirX = random.nextInt(2);
+                        int dirY = random.nextInt(2);
+                        if(dirX == 1){
+                            x = ((Tree) o).positionX + 1;
+                        } else {
+                            x = ((Tree) o).positionX - 1;
+                        }
+                        if(dirY == 1){
+                            y = ((Tree) o).positionY + 1;
+                        } else {
+                            y = ((Tree) o).positionY - 1;
+                        }
+
+                        if(interactiveLayer.getTileAt(x, y) == 0){
+                            addObject(new Apple(32, 32, new Vector2(x, y), world));
+                        }
+                    }
+                }
+            }
+
+        */
+
+        //}
+
     }
 
 
@@ -211,4 +305,7 @@ public class Map {
         return collisionMap;
     }
 
+    public void setWorld(World world) {
+        this.world = world;
+    }
 }

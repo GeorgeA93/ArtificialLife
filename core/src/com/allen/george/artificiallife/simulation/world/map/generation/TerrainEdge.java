@@ -25,7 +25,7 @@ public class TerrainEdge {
     }
 
     public static final int GRASS_TERRAIN_TYPE = 0;
-    public static final int SAND_TERRAIN_TYPE = 0;
+    public static final int SAND_TERRAIN_TYPE = 1;
 
 
 }

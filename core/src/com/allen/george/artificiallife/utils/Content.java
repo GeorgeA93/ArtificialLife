@@ -104,7 +104,7 @@ public class Content {
 
     public static void load(){
 
-        atlas = new TextureAtlas(Gdx.files.internal("tiles.atlas"));
+       // atlas = new TextureAtlas(Gdx.files.internal("tiles.atlas"));
 
         loadTileSheet();
         lifeForm = new Texture(Gdx.files.internal("tiles/lifeform.png"));
@@ -131,7 +131,7 @@ public class Content {
        // blend.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         TextureRegion[][] blendMask = split(blend, 32, 32);
 
-        /*
+
         waterTopLeft = tileSheetMain[27][2];
         waterTopRight = tileSheetMain[29][2];
         waterBottomLeft = tileSheetMain[27][4];
@@ -141,8 +141,8 @@ public class Content {
         waterBottom = tileSheetMain[28][4];
         waterRight = tileSheetMain[29][3];
         waterMiddle = tileSheetMain[28][3];
-        */
 
+/*
         waterTopLeft = atlas.findRegion("water_top_left");
         waterTopRight =  atlas.findRegion("water_top_right");
         waterBottomLeft = atlas.findRegion("water_bottom_left");
@@ -152,44 +152,50 @@ public class Content {
         waterBottom = atlas.findRegion("water_bottom");
         waterRight = atlas.findRegion("water_right");
         waterMiddle = atlas.findRegion("water_middle");
+        */
 
-        /*
+
         grassTile = tileSheetMain[1][9];
         grassTileDeatail1 = tileSheetMain[0][11];
         grassTileDeatail2 = tileSheetMain[1][11];
         grassTileDeatail3 = tileSheetMain[2][11];
-        */
 
+
+        /*
         grassTile = atlas.findRegion("grass");
         grassTileDeatail1 = atlas.findRegion("grass_detail_two");
         grassTileDeatail2 = atlas.findRegion("grass_detail_one");
         grassTileDeatail3 = atlas.findRegion("grass_detail_three");
+        */
 
-        /*
         sand_tile = tileSheetMain[0][5];
         sand_tile_detail_1 = tileSheetMain[1][5];
         sand_tile_detail_2 = tileSheetMain[2][5];
         dirt_tile  = tileSheetMain[6][5];;
         dirt_tile_detail_1 = tileSheetMain[7][5];;
         dirt_tile_detail_2 = tileSheetMain[8][5];;
-        */
+
+        /*
         sand_tile = atlas.findRegion("sand");
         sand_tile_detail_1 = atlas.findRegion("sand_detail_one");
         sand_tile_detail_2 = atlas.findRegion("sand_detail_two");
         dirt_tile  = atlas.findRegion("dirt");
         dirt_tile_detail_1 =atlas.findRegion("dirt_detail_one");
         dirt_tile_detail_2 = atlas.findRegion("dirt_detail_two");
+        */
 
-        /*
+
         bigRock1 = tileSheetMain[24][19];
         bigRock2 = tileSheetMain[24][20];
         bigRock3 = tileSheetMain[25][19];
         bigRock4 = tileSheetMain[25][20];
-        */
+
+        /*
         bigRock1 = atlas.findRegion("big_rock_top_left");
         bigRock2 = atlas.findRegion("big_rock_bottom_left");
         bigRock3 = atlas.findRegion("big_rock_top_right");
         bigRock4 = atlas.findRegion("big_rock_bottom_right");
+        */
 
         longRockBase = tileSheetMain[31][21];
         longRockTop = tileSheetMain[31][20];
@@ -209,7 +215,7 @@ public class Content {
         tree1sheet = new Texture(Gdx.files.internal("tiles/tree1.png"));
         TextureRegion[][] tree1sheetMain = split(tree1sheet, 32, 32);
 
-        /*
+
         tree_top_left = tree1sheetMain[0][0];
         tree_top_middle = tree1sheetMain[1][0];
         tree_top_right = tree1sheetMain[2][0];
@@ -222,8 +228,8 @@ public class Content {
         tree_bottom_left = tree1sheetMain[0][3];
         tree_bottom_middle = tree1sheetMain[1][3];
         tree_bottom_right = tree1sheetMain[2][3];
-        */
 
+        /*
         tree_top_left = atlas.findRegion("tree_top_left");
         tree_top_middle = atlas.findRegion("tree_top_middle");
         tree_top_right = atlas.findRegion("tree_top_right");
@@ -236,6 +242,7 @@ public class Content {
         tree_bottom_left = atlas.findRegion("tree_bottom_left");
         tree_bottom_middle = atlas.findRegion("tree_bottom_middle");
         tree_bottom_right = atlas.findRegion("tree_bottom_right");
+        */
 
 
         //Dead Tree

@@ -24,7 +24,7 @@ public abstract class MapLayer {
     }
 
     public int getTileAt(int x, int y){
-        return 0;
+        return tiles[x + y * width];
     }
 
     public void generateTree(int xx, int yy){
@@ -43,5 +43,7 @@ public abstract class MapLayer {
 
 
     public abstract void render(SpriteBatch spriteBatch, OrthographicCamera camera);
+
+
 
 }

@@ -1,14 +1,8 @@
 package com.allen.george.artificiallife.simulation.world.map;
 
 import com.allen.george.artificiallife.utils.Content;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import org.lwjgl.Sys;
-
-import javax.swing.border.TitledBorder;
-import java.nio.BufferOverflowException;
 
 /**
  * Created by George on 23/06/2014.
@@ -184,6 +178,7 @@ public class Tile {
 
         spriteBatch.draw( getTexture(id) ,x, y);
     }
+
 
     public int getTileID() {
         return tileID;

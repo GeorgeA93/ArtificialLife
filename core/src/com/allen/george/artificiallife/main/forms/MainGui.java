@@ -1,8 +1,14 @@
 package com.allen.george.artificiallife.main.forms;
 
+import com.allen.george.artificiallife.data.CustomDataSet;
+import com.allen.george.artificiallife.data.FitnessOverGenerations;
 import com.allen.george.artificiallife.main.ArtificialLife;
+import com.allen.george.artificiallife.utils.SimulationSettings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas;
+import org.jfree.chart.ChartPanel;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -19,6 +25,7 @@ import java.awt.event.ComponentListener;
  */
 public class MainGui extends JFrame implements ActionListener, ChangeListener, ComponentListener {
 
+
     private JPanel mainPane;
 
     @Override
@@ -29,27 +36,72 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
 
         } else if (e.getActionCommand().equals("New")) {
             newSimulation.setVisible(true);
-        } else if (e.getActionCommand().equals("Load Map")){
-            artificialLife.loadMap();
-        } else if (e.getActionCommand().equals("Save Map")){
-          //  artificialLife.saveMap();
+        } else if (e.getActionCommand().equals("Load Simulation")){
+            String filePathToLoad = getFilePath();
+            if(!filePathToLoad.equals("")){
+                artificialLife.load(filePathToLoad);
+            }
+
+        } else if (e.getActionCommand().equals("Save Simulation Every Generation")){
+            if(saveMenuItem.isSelected()){
+                saveMenuItem.setSelected(false);
+                SimulationSettings.SAVE_GENERATIONS = false;
+            } else {
+                saveMenuItem.setSelected(true);
+                SimulationSettings.SAVE_GENERATIONS = true;
+            }
+        } else if (e.getActionCommand().equals("Use Blending")){
+            if(useBlendingMenuItem.isSelected()){
+                useBlendingMenuItem.setSelected(false);
+                artificialLife.setUseBlending(false);
+            } else {
+                useBlendingMenuItem.setSelected(true);
+                artificialLife.setUseBlending(true);
+            }
+
         } else if (e.getActionCommand().equals("Running")) {
             if (!artificialLife.isRunning()) {
                 artificialLife.setRunning(true);
             } else {
                 artificialLife.setRunning(false);
             }
+        } else if(e.getActionCommand().equals("Render")){
+            if(renderMenuItem.isSelected()){
+                renderMenuItem.setSelected(false);
+                artificialLife.setRender(false);
+            } else {
+                renderMenuItem.setSelected(true);
+                artificialLife.setRender(true);
+            }
         }
+    }
+
+    private String getFilePath(){
+        JFileChooser chooser = new JFileChooser(); //the JFileChooser
+        chooser.setCurrentDirectory(new java.io.File(".")); //Set to look in the project root directory
+        chooser.setDialogTitle("Choose a .sim file");		//Set title of the File Chooser
+        chooser.setAcceptAllFileFilterUsed(false); //dont accept all file filters
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {		//When the user clicks the load/open button
+                return chooser.getSelectedFile().getAbsolutePath(); //get the path
+        }
+        return "";
     }
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        JSlider source = (JSlider) e.getSource();
-        if (!source.getValueIsAdjusting()) {
-            int val = source.getValue();
-            double speed = val * 0.0001;
-            artificialLife.getWorld().getDayNightCycler().setTimeSpeed(speed);
+        if(e.getSource() instanceof  JSlider){
+            JSlider source = (JSlider) e.getSource();
+            if (!source.getValueIsAdjusting()) {
+                int val = source.getValue();
+                double speed = val * 0.0001;
+                artificialLife.getWorld().getDayNightCycler().setTimeSpeed(speed);
+            }
+        } else {
+            JSpinner sp = ((JSpinner)e.getSource());
+            Integer value = (Integer)sp.getValue();
+            artificialLife.getWorld().getGeneticEngine().setGeneration(value);
         }
+
     }
 
     public void componentResized(ComponentEvent e){
@@ -73,9 +125,50 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
 
     public void setFPS(String fs) {
         TitledBorder title;
-        title = BorderFactory.createTitledBorder("FPS: " + fs);
+        String blendingText = "";
+        String savingText = "";
+        if(useBlendingMenuItem.isSelected()){
+            blendingText = "    Blending Enabled";
+        } else {
+            blendingText = "    Blending Disabled";
+        }
+        if(saveMenuItem.isSelected()){
+            savingText = "      Saving Enabled";
+        } else {
+            savingText = "      Saving Disabled";
+        }
+
+        title = BorderFactory.createTitledBorder("FPS: " + fs +  blendingText + savingText);
         openglPanel.setBorder(title);
     }
+
+    private SpinnerModel spinnerModel =  new SpinnerNumberModel(0, //initial value
+            0, //min
+            10000, //max
+            1);//step
+    private JSpinner spinner = new JSpinner(spinnerModel);
+
+    public void setEvolutionPanelData(boolean oldSim){
+        if(oldSim){
+            spinner.setBorder(new TitledBorder("Skip Generations"));
+            spinner.setVisible(true);
+            spinner.setValue(artificialLife.getWorld().getGeneticEngine().getGeneration());
+            populationSizeLabel.setText("Population Size: " + SimulationSettings.POPULATION_SIZE);
+            simulationNameLabel.setText("Simulation Name: " + SimulationSettings.WORLD_NAME);
+            mutationRateLabel.setText("Current Mutation Rate: " + SimulationSettings.MUTATION_RATE);
+            crossoverRateLabel.setText("Current Crossover Rate: " + SimulationSettings.CROSSOVER_RATE);
+            maxGenerations.setText("Maximum Generations: " + SimulationSettings.NUM_DAYS);
+        } else {
+           populationSizeLabel.setText("Population Size: " + SimulationSettings.POPULATION_SIZE);
+           simulationNameLabel.setText("Simulation Name: " + SimulationSettings.WORLD_NAME);
+           mutationRateLabel.setText("Current Mutation Rate: " + SimulationSettings.MUTATION_RATE);
+           crossoverRateLabel.setText("Current Crossover Rate: " + SimulationSettings.CROSSOVER_RATE);
+           maxGenerations.setText("Maximum Generations: " + SimulationSettings.NUM_DAYS);
+           spinner.setVisible(false);
+        }
+    }
+
+
 
     public void setCurrentCycle(int c) {
         dayLabel.setText("Day: " + c);
@@ -134,6 +227,7 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
         setJMenuBar(menuBar);
 
         menuBar.add(fileMenu);
+        saveMenuItem.setSelected(true);
         newMenuItem.addActionListener(this);
         loadMenutItem.addActionListener(this);
         saveMenuItem.addActionListener(this);
@@ -148,22 +242,36 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
         aboutMenuItem.addActionListener(this);
         helpMenu.add(aboutMenuItem);
 
+        menuBar.add(settingsMenu);
+        useBlendingMenuItem.addActionListener(this);
+        renderMenuItem.addActionListener(this);
+        settingsMenu.add(useBlendingMenuItem);
+        settingsMenu.add(renderMenuItem);
+
         mainPane = new JPanel();
         setContentPane(mainPane);
         mainPane.setLayout(new BorderLayout(1, 1));
 
         evolutionControls.setBorder(new TitledBorder(null,
-                "Evolution Controls", TitledBorder.LEADING, TitledBorder.TOP,
+                "Evolution Settings", TitledBorder.LEADING, TitledBorder.TOP,
                 null, null));
         mainPane.add(evolutionControls, BorderLayout.WEST);
-        evolutionControls.setLayout(new GridLayout(0, 2, 0, 0));
-
-        evolutionControls.add(placeHolder1);
+        evolutionControls.setLayout(new GridLayout(0, 1, 0, 0));
+        evolutionControls.add(simulationNameLabel);
+        evolutionControls.add(maxGenerations);
+        evolutionControls.add(populationSizeLabel);
+        evolutionControls.add(mutationRateLabel);
+        evolutionControls.add(crossoverRateLabel);
+        spinner.addChangeListener(this);
+        spinner.setVisible(false);
+        evolutionControls.add(spinner);
 
         openglPanel.setBorder(new TitledBorder(null, "FPS: ",
                 TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
         openglContainer = new Container();
+
+
 
         artificialLife = new ArtificialLife(this);
         canvas = new LwjglAWTCanvas(artificialLife);
@@ -222,19 +330,23 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
         dataPanel.setBorder(new TitledBorder(null, "Data...",
                 TitledBorder.LEADING, TitledBorder.TOP, null, null));
         mainPane.add(dataPanel, BorderLayout.EAST);
-        dataPanel.setLayout(new GridLayout(0, 2, 0, 0));
-
-        dataPanel.add(placeHolder2);
+        dataPanel.setLayout(new GridLayout(0, 1, 0, 0));
+        dataPanel.add(averageChartPanel);
+        dataPanel.add(worstChartPanel);
+        dataPanel.add(bestChartPanel);
     }
 
     private JMenuBar menuBar = new JMenuBar();
     private JMenu fileMenu = new JMenu("File");
     private JMenuItem exitMenuItem = new JMenuItem("Exit");
     private JMenuItem newMenuItem = new JMenuItem("New");
-    private JMenuItem loadMenutItem = new JMenuItem("Load Map");
-    private JMenuItem saveMenuItem = new JMenuItem("Save Map");
+    private JMenuItem loadMenutItem = new JMenuItem("Load Simulation");
+    private JMenuItem saveMenuItem = new JMenuItem("Save Simulation Every Generation");
     private JMenu helpMenu = new JMenu("Help");
     private JMenuItem aboutMenuItem = new JMenuItem("About");
+    private JMenu settingsMenu = new JMenu("Settings");
+    private JMenuItem useBlendingMenuItem = new JMenuItem("Use Blending");
+    private JMenuItem renderMenuItem = new JMenuItem("Render");
     private JPanel evolutionControls = new JPanel();
     private JLabel placeHolder1 = new JLabel("placeHolder");
     private JPanel openglPanel = new JPanel();
@@ -248,12 +360,27 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
     private JLabel lifeFormEnergyLabel = new JLabel("Life Form Energy: ");
     private JLabel lifeFormHungerLabel = new JLabel("Life Form Hunger: ");
     private JLabel lifeFormThirstLabel = new JLabel("Life Form Thirst: ");
+
+    //Evolution Panel
+    private JLabel populationSizeLabel = new JLabel("Population Size: ");
+    private JLabel simulationNameLabel = new JLabel("Simulation Name: ");
+    private JLabel mutationRateLabel = new JLabel("Current Mutation Rate: ");
+    private JLabel crossoverRateLabel = new JLabel("Current Crossover Rate: ");
+    private JLabel maxGenerations = new JLabel("Maximum Generations: ");
+
+
+
+    private CustomDataSet customDataSet = new CustomDataSet();
     private JPanel dataPanel = new JPanel();
-    private JLabel placeHolder2 = new JLabel("placeHolder");
+    private FitnessOverGenerations averageChartPanel = new FitnessOverGenerations(customDataSet, 0);
+    private FitnessOverGenerations worstChartPanel = new FitnessOverGenerations(customDataSet, 1);
+    private FitnessOverGenerations bestChartPanel = new FitnessOverGenerations(customDataSet, 2);
+
 
     private ArtificialLife artificialLife;
     private LwjglAWTCanvas canvas;
     private Container openglContainer;
+
 
     //Forms
     private NewSimulation newSimulation = new NewSimulation(this);
@@ -272,5 +399,25 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
         openglPanel.add(openglContainer);
         resizeOpenGL();
     }
+
+    public CustomDataSet getCustomDataSet(){
+        return this.customDataSet;
+    }
+
+
+    public void updateData(){
+        //averageChartPanel.updateData(customDataSet, 0);
+        //worstChartPanel.updateData(customDataSet, 1);
+        //bestChartPanel.updateData(customDataSet, 2);
+
+
+        //averageChartPanel = new FitnessOverGenerations(customDataSet, 0);
+        //worstChartPanel = new FitnessOverGenerations(customDataSet, 1);
+       // bestChartPanel = new FitnessOverGenerations(customDataSet, 2);
+    }
+
+
+
+
 
 }

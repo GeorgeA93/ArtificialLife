@@ -3,6 +3,7 @@ package com.allen.george.artificiallife.simulation.world.map.objects.food;
 import com.allen.george.artificiallife.simulation.life.LifeForm;
 import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.simulation.world.map.Map;
+import com.allen.george.artificiallife.simulation.world.map.Tile;
 import com.allen.george.artificiallife.simulation.world.map.objects.*;
 import com.allen.george.artificiallife.utils.Content;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -22,15 +23,33 @@ public class Apple extends Food {
 
     public void update() {
 
+        if(world == null){
+            System.out.println("WORLD NULL");
+        }
+
+        if(world.getGeneticEngine() == null){
+            System.out.println("GENETIC EWNGINE NULL");
+        }
+        if(world.getGeneticEngine().getPhenotypes() == null){
+            System.out.println("LIFEFORMS NULL");
+        }
+
+
+
         //check to see if a life form is over the apple
-        for(int i = 0; i < world.getEvolver().getLifeForms().size(); i ++){
-            int lx = world.getEvolver().getLifeForms().get(i).positionX;
-            int ly = world.getEvolver().getLifeForms().get(i).positionY;
+        for(int i = 0; i < world.getGeneticEngine().getPhenotypes().size(); i ++){
+            LifeForm lifeForm = world.getGeneticEngine().getPhenotypes().get(i);
+            int lx = lifeForm.positionX;
+            int ly = lifeForm.positionY;
+
+            if(lifeForm.getTargetObject() == null) continue;
+            if(lifeForm.getTargetObject() != this) continue;
 
             if(lx == this.positionX && ly == this.positionY){
-                world.getEvolver().getLifeForms().get(i).setTargetObject(null);
-                this.apply((world.getEvolver().getLifeForms().get(i)));
+                this.apply((lifeForm));
+                this.world.getMap().getInteractiveLayer().addTile(this.positionX, this.positionY, Tile.NULL_TILE.getTileID());
                 this.remove();
+                lifeForm.setTargetObject(null);
             }
         }
     }

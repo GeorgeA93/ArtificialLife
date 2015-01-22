@@ -1,5 +1,8 @@
 package com.allen.george.artificiallife.simulation.world.map.layers;
 
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.*;
+
 import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.simulation.world.map.Tile;
 import com.allen.george.artificiallife.simulation.world.map.generation.ClusterOfPoints;
@@ -12,6 +15,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import org.lwjgl.opengl.GL11;
 
 
@@ -26,6 +32,18 @@ import java.util.Random;
 public class BackgroundLayer extends MapLayer {
 
     private ClusterOfPoints[] clusters;
+
+    public BackgroundLayer(int width, int height){
+        this.width = width;
+        this.height = height;
+        this.name = "Background";
+        tiles = new int[width * height];
+        for(int y = 0; y < height; y ++) {
+            for (int x = 0; x < width; x++) {
+                tiles[x + y * width]= Tile.NULL_TILE.getTileID();
+            }
+        }
+    }
 
     public BackgroundLayer(int width, int height, Map map){
         this.width = width;
@@ -52,12 +70,24 @@ public class BackgroundLayer extends MapLayer {
 
         createMapFromMeans();
         calculateTerrainEdges();
+
+        cleanUp();
     }
 
     private int[][] grassTiles;
     private int[][] sandTiles;
     private int[][] dirtTiles;
     private ArrayList<TerrainEdge> terrainEdges;
+
+
+
+    private void cleanUp(){
+        clusters = null;
+        grassTiles = null;
+        sandTiles = null;
+        dirtTiles = null;
+    }
+
 
 
 
@@ -69,7 +99,6 @@ public class BackgroundLayer extends MapLayer {
                 if(x - 1 < 0 || x + 1 >= width  || y - 1 < 0  || y + 1 >= height) continue;
                 if(grassTiles[x][y] == 1 && grassTiles[x + 1][y] == 0){
                     TerrainEdge e = new TerrainEdge(x + 1, y, TerrainEdge.GRASS_TERRAIN_TYPE, Tile.grass_right.getTileID());
-
                     if(!terrainEdges.contains(e)){
                         terrainEdges.add(e);
 
@@ -131,33 +160,70 @@ public class BackgroundLayer extends MapLayer {
                     }
                 }
 
-                if(sandTiles[x][y] == 1 && sandTiles[x + 1][y] == 0 && grassTiles[x + 1][y] == 0){
-                   // terrainEdges[x + 1][y][1][0] = 1;
+                if(sandTiles[x][y] == 1 && sandTiles[x + 1][y] == 0 ){
+                    TerrainEdge e = new TerrainEdge(x + 1, y, TerrainEdge.SAND_TERRAIN_TYPE, Tile.grass_right.getTileID());
+                    if(!terrainEdges.contains(e)){
+                        terrainEdges.add(e);
+
+                    }
                 }
-                if(sandTiles[x][y] == 1 && sandTiles[x - 1][y] == 0 && grassTiles[x - 1][y] == 0){
-                   // terrainEdges[x - 1][y][1][0] = 1;
+                if(sandTiles[x][y] == 1 && sandTiles[x - 1][y] == 0){
+                    TerrainEdge e = new TerrainEdge(x - 1, y, TerrainEdge.SAND_TERRAIN_TYPE, Tile.grass_left.getTileID());
+                    if(!terrainEdges.contains(e)){
+                        terrainEdges.add(e);
+
+                    }
                 }
-                if(sandTiles[x][y] == 1 && sandTiles[x][y + 1] == 0 && grassTiles[x][y + 1] == 0){
-                   // terrainEdges[x ][y + 1][1][0] = 1;
+                if(sandTiles[x][y] == 1 && sandTiles[x][y + 1] == 0){
+                    TerrainEdge e = new TerrainEdge(x, y + 1, TerrainEdge.SAND_TERRAIN_TYPE,Tile.grass_top.getTileID());
+                    if(!terrainEdges.contains(e)){
+                        terrainEdges.add(e);
+
+
+                    }
                 }
-                if(sandTiles[x][y] == 1 && sandTiles[x][y - 1] == 0 && grassTiles[x][y - 1] == 0){
-                   // terrainEdges[x ][y - 1][1][0] = 1;
+                if(sandTiles[x][y] == 1 && sandTiles[x][y - 1] == 0){
+                    TerrainEdge e = new TerrainEdge(x , y - 1, TerrainEdge.SAND_TERRAIN_TYPE, Tile.grass_bottom.getTileID());
+                    if(!terrainEdges.contains(e)){
+                        terrainEdges.add(e);
+
+
+                    }
+
+                }
+                if(sandTiles[x][y] == 1 && sandTiles[x + 1][y + 1] == 0){
+                    TerrainEdge e = new TerrainEdge(x + 1 , y + 1, TerrainEdge.SAND_TERRAIN_TYPE, Tile.grass_top_right.getTileID());
+                    if(!terrainEdges.contains(e)){
+                        terrainEdges.add(e);
+
+
+                    }
+                }
+                else  if(sandTiles[x][y] == 1 && sandTiles[x + 1][y - 1] == 0){
+                    TerrainEdge e = new TerrainEdge(x + 1, y - 1, TerrainEdge.SAND_TERRAIN_TYPE, Tile.grass_bottom_right.getTileID());
+                    if(!terrainEdges.contains(e)){
+                        terrainEdges.add(e);
+
+
+                    }
+                }
+                if(sandTiles[x][y] == 1 && sandTiles[x - 1][y + 1] == 0){
+                    TerrainEdge e = new TerrainEdge(x - 1, y + 1, TerrainEdge.SAND_TERRAIN_TYPE, Tile.grass_top_left.getTileID());
+                    if(!terrainEdges.contains(e)){
+                        terrainEdges.add(e);
+
+
+                    }
+                }
+                if(sandTiles[x][y] == 1 && sandTiles[x - 1][y - 1] == 0){
+                    TerrainEdge e = new TerrainEdge(x - 1 , y - 1, TerrainEdge.SAND_TERRAIN_TYPE, Tile.grass_bottom_left.getTileID());
+                    if(!terrainEdges.contains(e)){
+                        terrainEdges.add(e);
+
+                    }
                 }
 
-                /*
-                if(dirtTiles[x][y] == 1 && dirtTiles[x + 1][y] == 0){
-                    terrainEdges[x ][y] = 1;
-                }
-                if(dirtTiles[x][y] == 1 && dirtTiles[x - 1][y] == 0){
-                    terrainEdges[x ][y] = 1;
-                }
-                if(dirtTiles[x][y] == 1 && dirtTiles[x][y + 1] == 0){
-                    terrainEdges[x ][y] = 1;
-                }
-                if(dirtTiles[x][y] == 1 && dirtTiles[x][y - 1] == 0){
-                    terrainEdges[x ][y] = 1;
-                }
-                */
+
             }
         }
     }
@@ -229,6 +295,7 @@ public class BackgroundLayer extends MapLayer {
         return index;
     }
 
+
     @Override
     public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
 
@@ -243,35 +310,45 @@ public class BackgroundLayer extends MapLayer {
         int maxX = Math.min(viewPointX + 1, width);
         int maxY = Math.min(viewPointY + 1, height);
 
+
         for (int y = minY; y < maxY; y++){
             for (int x = minX; x < maxX ; x++){
-
-               spriteBatch.setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
-               spriteBatch.flush();
-
-
-                for(int i = 0; i < terrainEdges.size(); i ++){
-                    if(terrainEdges.get(i).isAtTile(x, y)){
-                        //alpha mask
-                        Gdx.gl.glColorMask(false, false, false, true);
-                        spriteBatch.setBlendFunction(GL11.GL_ONE, GL11.GL_ZERO);
-                        Tile.renderManager.renderTile(spriteBatch, terrainEdges.get(i).id,  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
-                        spriteBatch.flush();
-
-                        //foreground
-                        Gdx.gl.glColorMask(true, true, true, true);
-                        spriteBatch.setBlendFunction(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_DST_ALPHA);
-
-                        //draw our sprite to be masked
-                        Tile.renderManager.renderTile(spriteBatch, Tile.GRASS_TILE.getTileID(),  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
-
-                        //remember to flush before changing GL states again
-                        spriteBatch.flush();
-                        spriteBatch.setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA); //reset?
-                    }
+                if(map.getWorld().getArtificialLife().getUseBlending()){
+                    spriteBatch.setBlendFunction(Gdx.gl.GL_SRC_ALPHA,Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
                 }
 
+                Tile.renderManager.renderTile(spriteBatch, tiles[x + y * width],  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
+                spriteBatch.flush();
+
+                if(map.getWorld().getArtificialLife().getUseBlending()){
+                    for(int i = 0; i < terrainEdges.size(); i ++){
+                        if(terrainEdges.get(i).isAtTile(x, y)){
+                            //alpha mask
+                           Gdx.gl.glColorMask(false, false, false, true);
+                           spriteBatch.setBlendFunction(Gdx.gl.GL_ONE,Gdx.gl.GL_ZERO);
+
+                            Tile.renderManager.renderTile(spriteBatch, terrainEdges.get(i).id,  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
+                            spriteBatch.flush();
+
+                            //foreground
+                            Gdx.gl.glColorMask(true, true, true, true);
+                            spriteBatch.setBlendFunction(Gdx.gl.GL_DST_ALPHA, Gdx.gl.GL_ONE_MINUS_DST_ALPHA);
+
+                            //draw our sprite to be masked
+                            if(terrainEdges.get(i).terrainType == TerrainEdge.GRASS_TERRAIN_TYPE){
+                                Tile.renderManager.renderTile(spriteBatch, Tile.GRASS_TILE.getTileID(),  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
+                            } else if(terrainEdges.get(i).terrainType == TerrainEdge.SAND_TERRAIN_TYPE) {
+                                Tile.renderManager.renderTile(spriteBatch, Tile.sand_tile.getTileID(),  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
+                                System.out.println("SAND");
+                            }
+
+
+                            //remember to flush before changing GL states again
+                            spriteBatch.flush();
+                            spriteBatch.setBlendFunction(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA); //reset?
+                        }
+                    }
+                }
 
             }
 
