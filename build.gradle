@@ -2,8 +2,12 @@ buildscript {
     repositories {
         mavenCentral()
         mavenLocal()
+        jcenter()
+
+
     }
     dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.5'
     }
 }
 
@@ -24,6 +28,7 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
+
 }
 
 project(":desktop") {
@@ -34,12 +39,12 @@ project(":desktop") {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        compile "org.mortbay.jetty:jetty:6.1.26"
     }
 }
 
 project(":core") {
     apply plugin: "java"
-
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"

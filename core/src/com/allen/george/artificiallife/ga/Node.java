@@ -1,11 +1,5 @@
 package com.allen.george.artificiallife.ga;
 
-import com.allen.george.artificiallife.ga.Behaviour.nodes.bases.BehaviourTreeNodeType;
-import com.allen.george.artificiallife.ga.Behaviour.nodes.conditions.*;
-import com.allen.george.artificiallife.ga.Behaviour.nodes.terminals.moveRandomDirectionNode;
-import com.allen.george.artificiallife.ga.Behaviour.nodes.terminals.moveToDenByPathNode;
-import com.allen.george.artificiallife.ga.Behaviour.nodes.terminals.moveToFoodByPathNode;
-import com.allen.george.artificiallife.ga.Behaviour.nodes.terminals.moveToWaterByPathNode;
 import com.allen.george.artificiallife.simulation.life.LifeForm;
 import com.allen.george.geneticx.Gene;
 
@@ -19,12 +13,12 @@ import java.util.Random;
  */
 public abstract class Node<T> {
 
-    public static int NUM_CONDITIONS = 4; //6
+    public static int NUM_CONDITIONS = 4;
     public static int NUM_ACTIONS = 0;
-    public static int NUM_TERMINALS = 4; //4
+    public static int NUM_TERMINALS = 4;
 
     private int function;
-    private BehaviourTreeNodeType behaviourTreeNodeType;
+    private NodeType behaviourTreeNodeType;
 
     private Node parent = null;
     private Node leftChild = null;
@@ -36,14 +30,14 @@ public abstract class Node<T> {
 
     }
 
-    public Node(BehaviourTreeNodeType behaviourTreeNodeType, int function){
+    public Node(NodeType behaviourTreeNodeType, int function){
         this.behaviourTreeNodeType = behaviourTreeNodeType;
         this.function = function;
     }
 
     public abstract boolean runFunction(LifeForm lifeForm);
     public abstract Node copy();
-    public abstract Node getClone();
+
 
     public int getFunction() {
         return function;
@@ -62,11 +56,11 @@ public abstract class Node<T> {
         this.function = function;
     }
 
-    public BehaviourTreeNodeType getBehaviourTreeNodeType() {
+    public NodeType getBehaviourTreeNodeType() {
         return behaviourTreeNodeType;
     }
 
-    public void setBehaviourTreeNodeType(BehaviourTreeNodeType behaviourTreeNodeType) {
+    public void setNodeType(NodeType behaviourTreeNodeType) {
         this.behaviourTreeNodeType = behaviourTreeNodeType;
     }
 
@@ -106,43 +100,6 @@ public abstract class Node<T> {
             rightChild.setParent(this);
         }
         this.rightChild = rightChild;
-    }
-
-    public static ArrayList<String> printPostOrder(Node root){
-        if(root != null){
-            printPostOrder(root.leftChild);
-            printPostOrder(root.rightChild);
-            System.out.print(root.getFunctionName() + " ");
-            nodes.add(root.getFunctionName());
-        }
-
-        return nodes;
-    }
-
-    public String printPostOrder(){
-        if (getLeftChild() != null) {
-            getLeftChild().printPostOrder();
-        }
-
-        if (getRightChild() != null) {
-            getRightChild().printPostOrder();
-        }
-        System.out.print(this.getFunctionName() + " ");
-        return this.getFunctionName();
-    }
-
-    public void printInOrder(){
-        if(getLeftChild() != null){
-            System.out.print("(");
-            getLeftChild().printInOrder();
-        }
-
-        System.out.print(" " + this.getFunctionName() + " ");
-
-        if(getRightChild() != null){
-            getRightChild().printInOrder();
-            System.out.print(")");
-        }
     }
 
     public void printTree(OutputStreamWriter out) throws IOException {
@@ -276,24 +233,13 @@ public abstract class Node<T> {
         }
 
         return mutated;
-
-        /*
-        int r = generator.nextInt(2);
-        if (r == 0) {
-            return new ConditionNode(generator.nextInt(NUM_CONDITIONS));
-        } else if (r == 1) {
-            return new ConditionNode(generator.nextInt(NUM_TERMINALS));
-        }
-
-        return null;
-        */
     }
 
 
 
     public String getFunctionName() {
 
-        if (behaviourTreeNodeType == BehaviourTreeNodeType.CONDTION) {
+        if (behaviourTreeNodeType == NodeType.CONDTION) {
             if (function == 0)
                 return "canSeeWater?";
             else if (function == 1)
@@ -302,9 +248,7 @@ public abstract class Node<T> {
                 return "canFindDen?";
             else if (function == 3)
                 return "walkabout?";
-        } else if (behaviourTreeNodeType == BehaviourTreeNodeType.ACTION) {
-
-        } else if (behaviourTreeNodeType == BehaviourTreeNodeType.TERMINAL) {
+        }  else if (behaviourTreeNodeType == NodeType.TERMINAL) {
             if (function == 0)
                 return "moveToFoodByPath";
             else if (function == 1)

@@ -17,12 +17,10 @@ import java.util.ArrayList;
 public class FileUtils {
 
     public static void loadGenerations(String filePath, ArtificialLife artificialLife) throws  IOException{
-
+        artificialLife.getWorld().setGeneticEngine(null);
         GenerationReader generationReader = new GenerationReader(filePath, artificialLife.getWorld());
         ArrayList<GenerationObject> generationObjects = generationReader.getGenerations();
-
         GeneticEngine geneticEngine = new GeneticEngine(artificialLife.getWorld(), generationObjects);
-
         artificialLife.getWorld().setGeneticEngine(geneticEngine);
     }
 

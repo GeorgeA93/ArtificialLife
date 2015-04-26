@@ -110,16 +110,11 @@ public class InteractiveLayer extends MapLayer{
                       }
                   }
                     //DENS
-                  if((  random.nextInt(300) > 298) && map.getForegroundLayer().getTileAt(x, y) == Tile.NULL_TILE.getTileID()){
+                  if((  random.nextInt(500) > 498) && map.getForegroundLayer().getTileAt(x, y) == Tile.NULL_TILE.getTileID()){
                       tiles[x + y * width] = Tile.den_tile.getTileID();
                       map.addObject(new Den(32, 32, new Vector2(x, y), map.getWorld()));
                   }
 
-                    //code for adding apples. needs moving.
-                    if(( random.nextInt(300) > 298) && tiles[x  + y * width] == Tile.NULL_TILE.getTileID()){
-                        tiles[x + y * width] = Tile.apple_tile.getTileID();
-                        map.addObject(new Apple(32, 32, new Vector2(x , y ), map.getWorld()));
-                    }
                 }
             }
         }

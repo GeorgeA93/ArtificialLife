@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: com.allen.george.artificiallife.main.desktop.DesktopLaunch
+ er
+

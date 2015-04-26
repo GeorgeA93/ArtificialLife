@@ -1,6 +1,5 @@
 package com.allen.george.artificiallife.ga;
 
-import com.allen.george.artificiallife.ga.Behaviour.nodes.bases.BehaviourTreeNodeType;
 import com.allen.george.artificiallife.simulation.life.LifeForm;
 
 /**
@@ -12,7 +11,7 @@ public class TerminalNode extends Node {
 
     public TerminalNode(int function){
         this.setFunction(function);
-        this.setBehaviourTreeNodeType(BehaviourTreeNodeType.TERMINAL);
+        this.setNodeType(NodeType.TERMINAL);
         this.setNumberOfChildren(0);
     }
 
@@ -58,13 +57,4 @@ public class TerminalNode extends Node {
         return copy;
     }
 
-    @Override
-    public Node getClone() {
-        Node clone = new TerminalNode(getFunction());
-
-        clone.setRightChild(getRightChild());
-        clone.setLeftChild(getLeftChild());
-
-        return clone;
-    }
 }

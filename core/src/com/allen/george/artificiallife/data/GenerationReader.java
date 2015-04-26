@@ -1,12 +1,13 @@
 package com.allen.george.artificiallife.data;
 
 import com.allen.george.artificiallife.ga.ConditionNode;
-import com.allen.george.artificiallife.ga.GAUtil;
 import com.allen.george.artificiallife.ga.TerminalNode;
 import com.allen.george.artificiallife.ga.Tree;
 import com.allen.george.artificiallife.simulation.life.LifeForm;
 import com.allen.george.artificiallife.simulation.world.World;
 import org.w3c.dom.Element;
+
+import javax.swing.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
@@ -21,12 +22,6 @@ import java.util.ArrayList;
  * Created by George on 14/12/2014.
  */
 public class GenerationReader implements Runnable{
-
-    //TODO
-    //Need a form to be shown on startup, create a new sim or load from exisiting simulation
-    //New simulation is basically what we are doing now
-    //Old simulation (load) will load the xml file, load the map and run trhough each "Created/Loaded" generation (INSTEAD OF PERFORMING GA  OPERATORS)
-    //This old simulation thus can be fast forwarded. generations can be skipped etc
 
     private Thread readingThread;
     private String filePath;
@@ -111,7 +106,8 @@ public class GenerationReader implements Runnable{
                 }
             }
 
-            System.out.println(generations.size());
+            JOptionPane.showMessageDialog(null, "Simulation loaded with: " + generations.size() + " generations",
+                    "Complete!", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception e){
             e.printStackTrace();

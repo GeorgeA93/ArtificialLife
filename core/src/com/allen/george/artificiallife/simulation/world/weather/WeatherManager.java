@@ -21,7 +21,7 @@ public class WeatherManager {
     public WeatherManager(World world){
         this.world = world;
         this.isRaining = false;
-        this.particleManager = new ParticleManager(1000, world, isRaining);
+        this.particleManager = new ParticleManager(20000, world, isRaining);
         cyclesToRain = new int[world.getDayNightCycler().getMaxCycles()];
         if(SimulationSettings.CAN_RAIN){
             for(int i =0; i < world.getDayNightCycler().getMaxCycles(); i ++){
@@ -32,7 +32,7 @@ public class WeatherManager {
 
     public void update(double timeSpeed){
         if(world.getDayNightCycler().getCycles() >= world.getDayNightCycler().getMaxCycles())return;
-        if(cyclesToRain[world.getDayNightCycler().getCycles()] > 6){
+        if(cyclesToRain[world.getDayNightCycler().getCycles()] > 6){ // 6
             isRaining = true;
         } else {
             isRaining = false;

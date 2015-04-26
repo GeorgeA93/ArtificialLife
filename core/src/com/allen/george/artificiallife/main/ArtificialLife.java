@@ -47,6 +47,7 @@ public class ArtificialLife extends ApplicationAdapter implements ApplicationLis
         running = false;
         gui.setRunningRadio(running);
         gui.setSimulationSpeed(SimulationSettings.INIT_SPEED);
+        gui.getCustomDataSet().clear();
     }
 	
 	@Override
@@ -66,8 +67,8 @@ public class ArtificialLife extends ApplicationAdapter implements ApplicationLis
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         try {
-            WebServiceAPI.deleteAllGenerations();
-            WebServiceAPI.deleteAllNodes();
+            WebServiceAPI.deleteAllGenerations(gui.getUserData().USERNAME);
+            WebServiceAPI.deleteAllNodes(gui.getUserData().USERNAME);
         } catch (Exception e){
 
         }
@@ -204,6 +205,11 @@ public class ArtificialLife extends ApplicationAdapter implements ApplicationLis
 
     public World getWorld() {
        return world;
+    }
+
+    public void setWorld(World world)
+    {
+        this.world = null;
     }
 
 

@@ -338,8 +338,8 @@ public class BackgroundLayer extends MapLayer {
                             if(terrainEdges.get(i).terrainType == TerrainEdge.GRASS_TERRAIN_TYPE){
                                 Tile.renderManager.renderTile(spriteBatch, Tile.GRASS_TILE.getTileID(),  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
                             } else if(terrainEdges.get(i).terrainType == TerrainEdge.SAND_TERRAIN_TYPE) {
-                                Tile.renderManager.renderTile(spriteBatch, Tile.sand_tile.getTileID(),  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
-                                System.out.println("SAND");
+                              //  Tile.renderManager.renderTile(spriteBatch, Tile.sand_tile.getTileID(),  x * Map.TILE_SIZE - (int)camera.position.x, y * Map.TILE_SIZE - (int)camera.position.y);
+                               // System.out.println("SAND");
                             }
 
 

@@ -2,21 +2,22 @@ package com.allen.george.artificiallife.ga;
 
 import com.allen.george.artificiallife.data.GenerationObject;
 import com.allen.george.artificiallife.data.GenerationWriter;
-import com.allen.george.artificiallife.data.networking.WebServiceAPI;
 import com.allen.george.artificiallife.simulation.life.LifeForm;
 import com.allen.george.artificiallife.simulation.world.World;
 import com.allen.george.artificiallife.utils.SimulationSettings;
-import com.allen.george.geneticx.*;
 import com.allen.george.geneticx.crossover.TreeCrossoverMethod;
 import com.allen.george.geneticx.fitness.*;
-import com.allen.george.geneticx.mutation.RandomGeneMutator;
+import com.allen.george.geneticx.mutation.TreeMutateMethod;
 import com.allen.george.geneticx.selection.TournamentParentSelection;
 import com.allen.george.geneticx.util.GeneticXUtil;
 import com.allen.george.geneticx.Gene;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.allen.george.geneticx.Configuration;
+import com.allen.george.geneticx.GeneticAlgorithm;
 
-import java.io.OutputStreamWriter;
+
+
 import java.util.ArrayList;
 
 /**
@@ -46,8 +47,8 @@ public class GeneticEngine {
         for(int i = 0; i < possibleGenes.length; i ++) {
             possibleGenes[i] = new Gene(i);
         }
-       // configuration = new Configuration("Test", SimulationSettings.POPULATION_SIZE, new TestMutliple(new FitnessFunction[] { new FoodTestFitness(), new SleepTestFitness(), new RandomTestFitness(), new WaterTestFitness()}), new NormalFitnessEvaluator(), new TournamentParentSelection(), new TreeCrossoverMethod(), new RandomGeneMutator(), possibleGenes);
-        configuration = new Configuration("Test", SimulationSettings.POPULATION_SIZE,  new TestFitnessFunction(), new NormalFitnessEvaluator(), new TournamentParentSelection(), new TreeCrossoverMethod(), new RandomGeneMutator(), possibleGenes);
+
+        configuration = new Configuration("Test", SimulationSettings.POPULATION_SIZE,  new TestFitnessFunction(), new NormalFitnessEvaluator(), new TournamentParentSelection(), new TreeCrossoverMethod(), new TreeMutateMethod(), possibleGenes);
         configuration.print();
         geneticAlgorithm = new GA(configuration, SimulationSettings.POPULATION_SIZE, this);
     }
@@ -67,29 +68,10 @@ public class GeneticEngine {
             lifeForms.add(new LifeForm(world, GeneticXUtil.generateRandomGenesFromPossibleGenes(possibleGenes, 15)));
         }
 
-        //configuration = new Configuration("Test", SimulationSettings.POPULATION_SIZE, new TestMutliple(new FitnessFunction[] { new FoodTestFitness(), new SleepTestFitness(), new RandomTestFitness(), new WaterTestFitness()}), new NormalFitnessEvaluator(), new TournamentParentSelection(), new TreeCrossoverMethod(), new RandomGeneMutator(), possibleGenes);
-        configuration = new Configuration("Test", SimulationSettings.POPULATION_SIZE,  new TestFitnessFunction(), new NormalFitnessEvaluator(), new TournamentParentSelection(), new TreeCrossoverMethod(), new RandomGeneMutator(), possibleGenes);
+        configuration = new Configuration("Test", SimulationSettings.POPULATION_SIZE,  new TestFitnessFunction(), new NormalFitnessEvaluator(), new TournamentParentSelection(), new TreeCrossoverMethod(), new TreeMutateMethod(), possibleGenes);
         configuration.print();
 
         geneticAlgorithm = new GA(configuration, SimulationSettings.POPULATION_SIZE, this);
-
-
-
-        OutputStreamWriter out = new OutputStreamWriter(System.out);
-        for(int i = 0; i < SimulationSettings.POPULATION_SIZE; i ++){
-           // GAUtil.printNode(lifeForms.get(i).getTest().getRoot());
-            try{
-                lifeForms.get(i).getTest().getRoot().printTree(out);
-
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        try{
-           out.flush();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     public void updateLifeForms(double timeSpeed){
@@ -129,7 +111,7 @@ public class GeneticEngine {
                 } else {
                     geneticAlgorithm.run(lifeForms);
 
-                    world.getArtificialLife().getGui().getCustomDataSet().addData(geneticAlgorithm.getAverageFitness(), geneticAlgorithm.getFittesteGenotype().getFitness().doubleValue(), geneticAlgorithm.getWorstGenotype().getFitness().doubleValue(), generation);
+                   // world.getArtificialLife().getGui().getCustomDataSet().addData(geneticAlgorithm.getAverageFitness(), geneticAlgorithm.getFittesteGenotype().getFitness().doubleValue(), geneticAlgorithm.getWorstGenotype().getFitness().doubleValue(), generation);
                     for(LifeForm lf : this.lifeForms){
                         lf.initAsChild();
                     }
@@ -138,15 +120,9 @@ public class GeneticEngine {
                         generationWriter.start(lifeForms, generation, SimulationSettings.OUPUT_FILE_PATH + SimulationSettings.OUTPUT_FILE_NAME);
                     }
 
-                    try{
-                        WebServiceAPI.pushAverageData(geneticAlgorithm.getFittesteGenotype().getFitness().doubleValue(), geneticAlgorithm.getWorstGenotype().getFitness().doubleValue(),geneticAlgorithm.getAverageFitness(), generation);
-                        WebServiceAPI.pushBestLifeFormData(geneticAlgorithm.getFittesteGenotype());
-                    } catch (Exception e){
+                    /*
 
-                    }
-
-
-
+                    */
 
                     generation ++;
                     evolved = true;
@@ -190,6 +166,10 @@ public class GeneticEngine {
 
     public int getGeneration(){
         return  this.generation;
+    }
+
+    public World getWorld(){
+        return this.world;
     }
 
 }

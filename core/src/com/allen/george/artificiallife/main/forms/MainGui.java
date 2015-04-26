@@ -4,8 +4,10 @@ import com.allen.george.artificiallife.data.CustomDataSet;
 import com.allen.george.artificiallife.data.FitnessOverGenerations;
 import com.allen.george.artificiallife.main.ArtificialLife;
 import com.allen.george.artificiallife.utils.SimulationSettings;
+import com.allen.george.artificiallife.utils.UserData;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -19,6 +21,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * Created by George on 16/07/2014.
@@ -73,6 +79,30 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
                 renderMenuItem.setSelected(true);
                 artificialLife.setRender(true);
             }
+        } else if(e.getActionCommand().equals("Change User")){
+
+            final Properties properties = new Properties();
+            InputStream inputStream =  null;
+
+            try{
+                inputStream = new FileInputStream("user.properties");
+                properties.load(inputStream);
+
+            } catch(IOException ex){
+                ex.printStackTrace();
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException ee) {
+                        ee.printStackTrace();
+                    }
+                }
+            }
+
+            this.setVisible(false);
+            LoginForm g = new LoginForm(properties, this);
+            g.setVisible(true);
         }
     }
 
@@ -202,10 +232,31 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
 
     }
 
+    private UserData userData;
+
+    public UserData getUserData(){
+        return this.userData;
+    }
+
     /**
      * Create the frame.
      */
-    public MainGui() {
+    public MainGui(String[] arguments) {
+
+        if(arguments == null){
+            return;
+        } else {
+            String username = "";
+            for(String s : arguments){
+                if(s.contains("Username")){
+                    if(s.split("=").length == 1) return;
+                    username = s.split("=")[1];
+                }
+            }
+            if(username.equals("")) return;
+
+            userData = new UserData(username);
+        }
 
         try {
             // Set cross-platform Java L&F (also called "Metal")
@@ -245,8 +296,10 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
         menuBar.add(settingsMenu);
         useBlendingMenuItem.addActionListener(this);
         renderMenuItem.addActionListener(this);
+        changeUserItem.addActionListener(this);
         settingsMenu.add(useBlendingMenuItem);
         settingsMenu.add(renderMenuItem);
+        settingsMenu.add(changeUserItem);
 
         mainPane = new JPanel();
         setContentPane(mainPane);
@@ -274,6 +327,7 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
 
 
         artificialLife = new ArtificialLife(this);
+        LwjglApplicationConfiguration.disableAudio = true;
         canvas = new LwjglAWTCanvas(artificialLife);
         canvas.getCanvas().setSize(0, 0);
 
@@ -317,7 +371,7 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
         simulationSpeed.setMaximum(200);
         simulationSpeed.setMinimum(1);
         simulationSpeed.addChangeListener(this);
-        simulationControls.add(simulationSpeed);
+       simulationControls.add(simulationSpeed);
 
         weatherLabel.setToolTipText("The current weather");
         simulationControls.add(weatherLabel);
@@ -347,6 +401,7 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
     private JMenu settingsMenu = new JMenu("Settings");
     private JMenuItem useBlendingMenuItem = new JMenuItem("Use Blending");
     private JMenuItem renderMenuItem = new JMenuItem("Render");
+    private JMenuItem changeUserItem = new JMenuItem("Change User");
     private JPanel evolutionControls = new JPanel();
     private JLabel placeHolder1 = new JLabel("placeHolder");
     private JPanel openglPanel = new JPanel();
@@ -381,6 +436,10 @@ public class MainGui extends JFrame implements ActionListener, ChangeListener, C
     private LwjglAWTCanvas canvas;
     private Container openglContainer;
 
+    public void reset(){
+        this.setArtificialLife(new ArtificialLife(this));
+        this.setVisible(true);
+    }
 
     //Forms
     private NewSimulation newSimulation = new NewSimulation(this);

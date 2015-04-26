@@ -3,7 +3,7 @@ package com.allen.george.artificiallife.data;
 import com.allen.george.artificiallife.simulation.life.LifeForm;
 
 import java.util.ArrayList;
-import java.util.DoubleSummaryStatistics;
+
 
 /**
  * Created by George on 15/12/2014.

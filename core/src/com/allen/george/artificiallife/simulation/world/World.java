@@ -63,13 +63,13 @@ public class World {
     public void render(SpriteBatch spriteBatch, OrthographicCamera camera){
         spriteBatch.begin();
         map.renderLayer(spriteBatch, camera, map.getBackgroundLayer());
-
+        geneticEngine.render(spriteBatch, camera);
         map.renderObjects(spriteBatch, camera);
         map.renderLayer(spriteBatch, camera, map.getShadowLayer());
         map.renderLayer(spriteBatch,  camera, map.getInteractiveLayer());
         map.renderLayer(spriteBatch,  camera, map.getForegroundLayer());
         weatherManager.render(spriteBatch,  camera);
-        geneticEngine.render(spriteBatch, camera);
+
         spriteBatch.end();
         dayNightCycler.render(spriteBatch,camera);
     }

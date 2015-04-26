@@ -91,7 +91,7 @@ public class GenerationWriter implements Runnable{
                 lf.appendChild(treeStart);
 
                 //tree contents
-                Tree lfTree = lifeForm.getTest();
+                Tree lfTree = lifeForm.getTree();
                 Node root = lfTree.getRoot();
                 writeTree(root, "Root", treeStart, doc);
 
@@ -158,13 +158,12 @@ public class GenerationWriter implements Runnable{
                 lf.appendChild(treeStart);
 
                 //tree contents
-                Tree lfTree = lifeForm.getTest();
+                Tree lfTree = lifeForm.getTree();
                 Node root = lfTree.getRoot();
                 writeTree(root, "Root", treeStart, doc);
 
                 count ++;
             }
-
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             transformerFactory.setAttribute("indent-number", 4);
             Transformer transformer = transformerFactory.newTransformer();
@@ -174,6 +173,7 @@ public class GenerationWriter implements Runnable{
             StreamResult result = new StreamResult(new File(filePath));
 
             transformer.transform(source, result);
+
 
         } catch (Exception e){
             e.printStackTrace();

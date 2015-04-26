@@ -1,6 +1,5 @@
 package com.allen.george.artificiallife.ga;
 
-import com.allen.george.artificiallife.ga.Behaviour.nodes.bases.BehaviourTreeNodeType;
 import com.allen.george.artificiallife.simulation.life.LifeForm;
 
 /**
@@ -10,7 +9,7 @@ public class ConditionNode extends Node {
 
     public ConditionNode(int function){
         this.setFunction(function);
-        this.setBehaviourTreeNodeType(BehaviourTreeNodeType.CONDTION);
+        this.setNodeType(NodeType.CONDTION);
         this.setNumberOfChildren(2);
     }
 
@@ -43,7 +42,7 @@ public class ConditionNode extends Node {
             }  else if(val == 1){
                 return lifeForm.smellFood(lifeForm.getSmellingDistance());
             } else if(val == 2){
-                return lifeForm.canFindDen(80); //?
+                return lifeForm.canFindDen(lifeForm.getSeeingDistance());
             } else if(val == 3){
                 lifeForm.TRIED_TO_WALK_ABOUT += 1;
                 return true; //Walkabout question
@@ -73,14 +72,6 @@ public class ConditionNode extends Node {
         return copy;
     }
 
-    @Override
-    public Node getClone() {
-        Node clone = new ConditionNode(getFunction());
 
-        clone.setRightChild(getRightChild());
-        clone.setLeftChild(getLeftChild());
-
-        return clone;
-    }
 
 }

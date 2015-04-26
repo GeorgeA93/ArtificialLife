@@ -1,7 +1,6 @@
 package com.allen.george.artificiallife.simulation.life;
 
 import com.allen.george.artificiallife.ga.*;
-import com.allen.george.artificiallife.ga.Behaviour.nodes.tree.BehaviourTree;
 import com.allen.george.artificiallife.pathfinding.AStarPathFinder;
 import com.allen.george.artificiallife.pathfinding.PathNode;
 import com.allen.george.artificiallife.simulation.world.World;
@@ -9,19 +8,16 @@ import com.allen.george.artificiallife.simulation.world.map.Map;
 import com.allen.george.artificiallife.simulation.world.map.objects.ALSObject;
 import com.allen.george.artificiallife.simulation.world.map.objects.Den;
 import com.allen.george.artificiallife.simulation.world.map.objects.DistanceComparator;
-import com.allen.george.artificiallife.simulation.world.map.objects.MapObject;
 import com.allen.george.artificiallife.simulation.world.map.objects.food.Food;
 import com.allen.george.artificiallife.simulation.world.map.objects.resources.Water;
 import com.allen.george.artificiallife.utils.Content;
+import com.allen.george.artificiallife.utils.SimulationSettings;
 import com.allen.george.geneticx.Chromosome;
 import com.allen.george.geneticx.Gene;
-import com.allen.george.geneticx.Genotype;
 import com.allen.george.geneticx.fitness.FitnessFunction;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-
-import java.awt.event.WindowAdapter;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -31,7 +27,7 @@ import java.util.Collections;
 /**
  * Created by George on 24/06/2014.
  */
-public class LifeForm extends ALSObject implements Genotype{
+public class LifeForm extends ALSObject {
 
     //================================================================================
     // PROPERTIES
@@ -42,7 +38,7 @@ public class LifeForm extends ALSObject implements Genotype{
     public String currentNode = "";
 
     //PATHING PROPERTIES
-    private int smellingDistance = 30;
+    private int smellingDistance = 20;
     private int seeingDistance = 20;
     private ALSObject targetObject;
     private AStarPathFinder pathFinder;
@@ -82,9 +78,8 @@ public class LifeForm extends ALSObject implements Genotype{
     private Chromosome chromosome;
     private BigDecimal fitness;
     private double scaledFitness;
-    private BehaviourTree tree;
 
-    private Tree test;
+    private Tree tree;
 
     //NEW NUMBERS
     public int WATER_DRUNK = 0;
@@ -136,15 +131,15 @@ public class LifeForm extends ALSObject implements Genotype{
         this.isHungry = false;
 
         this.chromosome = new Chromosome(lifeForm.getChromosome());
-        this.test = new Tree(lifeForm.getTest(), this, 0);
+        this.tree = new Tree(lifeForm.getTree(), this, 0);
 
     }
 
     public LifeForm(int x, int y, Tree tree, double fitness, World world){
         this.positionX = x;
         this.positionY = y;
-        this.test = tree;
-        this.test.setLifeForm(this);
+        this.tree = tree;
+        this.tree.setLifeForm(this);
         this.fitness = new BigDecimal(fitness);
         this.world  = world;
 
@@ -205,10 +200,8 @@ public class LifeForm extends ALSObject implements Genotype{
         this.isHungry = false;
 
         this.chromosome = new Chromosome(genes);
-      // this.test = Tree.generateTreeFromGenes(chromosome.getGenes(), this);
-       this.test = Tree.generateTree(3, this);
-      // this.test = perfectTree();
-        //this.test = Test();
+
+        this.tree = Tree.generateTree(SimulationSettings.START_TREE_DEPTH, this);
     }
 
     private Tree perfectTree(){
@@ -244,46 +237,18 @@ public class LifeForm extends ALSObject implements Genotype{
         return t;
     }
 
-    private Tree Test(){
-        Node hasEnergy = new ConditionNode(3);
-        hasEnergy.setLeftChild(new ConditionNode(0));
-        hasEnergy.getLeftChild().setLeftChild(new ConditionNode(1));
-        hasEnergy.getLeftChild().getLeftChild().setLeftChild(new TerminalNode(0)); //food by path
-        hasEnergy.getLeftChild().getLeftChild().setRightChild(new TerminalNode(2)); //move random
 
-        hasEnergy.getLeftChild().setRightChild(new ConditionNode(4));
-        hasEnergy.getLeftChild().getRightChild().setLeftChild(new ConditionNode(5));
-        hasEnergy.getLeftChild().getRightChild().getLeftChild().setLeftChild(new TerminalNode(3)); //move to water
-        hasEnergy.getLeftChild().getRightChild().getLeftChild().setRightChild(new TerminalNode(2)); //move random
-
-        hasEnergy.getLeftChild().getRightChild().setRightChild(new ConditionNode(2));
-        hasEnergy.getLeftChild().getRightChild().getRightChild().setLeftChild(new TerminalNode(1)); //go to den
-        hasEnergy.getLeftChild().getRightChild().getRightChild().setRightChild(new TerminalNode(2)); //move random
-
-
-
-        return new Tree(hasEnergy, this);
-
+    public Tree getTree() {
+        return tree;
     }
 
-    public Tree getTest() {
-        return test;
+    public void setTree(Tree tree) {
+        this.tree = tree;
     }
 
-    public void setTest(Tree test) {
-        this.test = test;
-    }
-
-    public void printStats(){
-
-        System.out.println();
-        System.out.println("Tried to smell food: " + this.TRIED_TO_EAT + ", Tried to drink water: " + this.TRIED_TO_DRINK + ", Tried to find den: " + this.TRIED_TO_SLEEP);
-        System.out.println("FOOD SCORE: " + this.FOOD_EATEN + ", WATER SCORE: " +  this.WATER_DRUNK + ", SLEEP SCORE: " + this.SLEEPS_TAKEN);
-        System.out.println();
-    }
 
     public void initAsChild(){
-        this.EVENTS_PER_CYCLE = this.test.getDepth();
+        this.EVENTS_PER_CYCLE = this.tree.getDepth();
         this.CYCLES = 0;
         this.EVENTS_PER_GENERATION = 0;
         this.WATER_DRUNK = 0;
@@ -317,21 +282,6 @@ public class LifeForm extends ALSObject implements Genotype{
     }
 
     private void initDen(){
-        /*
-        ArrayList<Den> dens = new ArrayList<Den>();
-        for (int i = 0; i < world.getMap().getMapObjects().size(); i++) {
-            ALSObject obj = world.getMap().getMapObjects().get(i);
-            Den d;
-            if(obj instanceof Den){
-                d = (Den)obj;
-                dens.add(d);
-            }else {
-                continue;
-            }
-        }
-
-        this.den = dens.get((int)(Math.random() * ((dens.size() - 1 ) + 1))); //pick a random den out of all the dens on the map
-        */
 
         ArrayList<ALSObject> closeDens = new ArrayList<ALSObject>();
         for (int i = 0; i < world.getMap().getMapObjects().size(); i++) {
@@ -551,7 +501,7 @@ public class LifeForm extends ALSObject implements Genotype{
             hunger += 0.1;
             thirst += 0.05;
 
-             test.runRootNode(); //new thread?
+             tree.runRootNode(); //new thread?
             //create thread
             //start thread
 
@@ -589,7 +539,7 @@ public class LifeForm extends ALSObject implements Genotype{
        // System.out.println("RANDOM");
         int dir = 1 + (int)(Math.random() * ((4 - 1) + 1));
         if(dir == 1){
-            int numberOfSteps = 1 + (int)(Math.random() * ((9 - 1) + 1));
+            int numberOfSteps = 9 + (int)(Math.random() * ((18 - 9) + 1));
             for(int i = 1; i < numberOfSteps; i ++){
                 if(world.getMap().getCollisionAt(positionX, positionY + i) == 1){
                     return true;
@@ -858,6 +808,8 @@ public class LifeForm extends ALSObject implements Genotype{
     //================================================================================
 
 
+    public double totalPenalty;
+    public double adjustment;
 
 
 
@@ -998,14 +950,6 @@ public class LifeForm extends ALSObject implements Genotype{
         this.scaledFitness = scaledFitness;
     }
 
-    public BehaviourTree getTree() {
-        return tree;
-    }
-
-    public void setTree(BehaviourTree tree) {
-        this.tree = tree;
-        this.initAsChild();
-    }
 
     public int getNumberOfFoodEatenWhenHungry() {
         return numberOfFoodEatenWhenHungry;
